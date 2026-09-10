@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotería - Triunfo - Sistema de Taquilla Multibanca</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #27ae60;
+            --danger-color: #c0392b;
+            --warning-color: #d35400;
+            --bg-color: #f4f6f7;
+        }
+        html, body {
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .reloj-header {
+            font-size: 15px;
+            font-weight: bold;
+            margin-top: 2px;
+            color: #f1c40f;
+        }
+        .container {
+            max-width: 1100px;
+            width: 95%;
+            margin: 10px auto;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        .nav-tabs {
+            display: flex;
+            justify-content: space-around;
+            background: #e2e8f0;
+            padding: 6px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+        .nav-tabs button {
+            background: none;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 4px;
+            transition: 0.3s;
+            font-size: 13px;
+        }
+        .nav-tabs button.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        .panel {
+            display: none;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .panel.active {
+            display: flex;
+        }
+        .grid-multiselect {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 6px;
+            margin-top: 5px;
+        }
+        .btn-slot-opcion {
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+            font-size: 11px;
+        }
+        .btn-slot-opcion.activo {
+            background: var(--accent-color);
+            color: white;
+            border-color: #219653;
+        }
+        .btn-slot-opcion.proximo {
+            background: #f1c40f;
+            color: #333;
+            border-color: #d4ac0d;
+        }
+        .btn-slot-opcion.cerrado {
+            background: #e74c3c;
+            color: white;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 3px;
+            font-size: 13px;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 13px;
+        }
+        button.btn-main {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+        button.btn-main:hover {
+            opacity: 0.9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 6px;
+            text-align: center;
+            font-size: 12px;
+        }
+        th {
+            background-color: #f1f5f9;
+        }
+        .alerta {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: none;
+            font-size: 13px;
+        }
+        .exito {
+            background: #d4edda;
+            color: #155724;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: none;
+            font-size: 13px;
+        }
+        .badge-pagado { color: var(--accent-color); font-weight: bold; }
+        .card-seccion {
+            background: #fdfefe;
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .grid-horarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .texto-rojo-ganador {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+        .balance-positivo { color: var(--accent-color); font-weight: bold; }
+        .balance-negativo { color: var(--danger-color); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #111; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <h2 style="color: #ffcc00; text-align: center; font-size: 2.5em; text-shadow: 2px 2px 4px #000; margin-bottom: 20px;">Lotería - Triunfo</h2>
+    <form style="display: flex; flex-direction: column; align-items: center; width: 300px;">
+        <label style="color: #fff; margin-bottom: 5px;">Contraseña</label>
+        <input type="password" name="contraseña" required style="padding: 10px; width: 100%; margin-bottom: 15px; border-radius: 5px; border: none;">
+        <button type="submit" style="padding: 10px 20px; background-color: #ffcc00; border: none; font-weight: bold; border-radius: 5px; cursor: pointer;">Ingresar</button>
+    </form>
+</div>
+
+<script>
+    document.querySelector('#login-overlay form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (this.contraseña.value === "1234") {
+            document.getElementById('login-overlay').style.display = 'none';
+        } else {
+            alert("Contraseña incorrecta");
+        }
+    });
+</script>
+
+
+    <header>
+        <div> Lotería - Triunfo— Sistema de Taquilla Multibanca</div>
+        <div id="reloj-venezuela" class="reloj-header">00:00:00 PM</div>
+    </header>
+    <div class="container">
+        <!-- Navegación -->
+        <div class="nav-tabs">
+            <button onclick="showPanel('ventas')" id="tab-ventas" class="active">Ventas</button>
+            <button onclick="showPanel('resultados')" id="tab-resultados">Resultados</button>
+            <button onclick="showPanel('ganadores')" id="tab-ganadores">Pagar / Anular</button>
+            <button onclick="showPanel('reportes')" id="tab-reportes">Tickets Ganadores</button>
+            <button onclick="showPanel('balance')" id="tab-balance">Balance de Caja</button>
+            <button onclick="showPanel('configuracion')" id="tab-configuracion">Configuración</button>
+        </div>
+
+        <div id="alerta-sistema" class="alerta"></div>
+        <div id="exito-sistema" class="exito"></div>
+
+        <!-- PANEL DE VENTAS -->
+        <div id="panel-ventas" class="panel active">
+            <h2 style="margin-top:0; font-size:18px;">Registrar Jugada Multibanca Avanzada</h2>
+            
+            <div class="form-group">
+                <label>Seleccionar Agencias / Loterías:</label>
+                <div id="contenedor-loterias-venta" class="grid-multiselect">
+                    <div class="btn-slot-opcion activo" data-lot="Lotto Activo" onclick="toggleLoteriaVenta(this)">Lotto Activo</div>
+                    <div class="btn-slot-opcion" data-lot="La Granjita" onclick="toggleLoteriaVenta(this)">La Granjita</div>
+                    <div class="btn-slot-opcion" data-lot="Selva Plus" onclick="toggleLoteriaVenta(this)">Selva Plus</div>
+                    <div class="btn-slot-opcion" data-lot="Guácharo Activo" onclick="toggleLoteriaVenta(this)">Guácharo Activo</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Seleccionar Horarios:</label>
+                <div id="contenedor-botones-horarios" class="grid-multiselect"></div>
+                <p id="texto-horario-seleccionado" style="font-size: 12px; font-weight: bold; color: var(--primary-color); margin: 3px 0 0 0;">Ningún horario seleccionado</p>
+            </div>
+
+            <div style="display: flex; gap: 8px;">
+                <div class="form-group" style="flex: 2; margin-bottom: 5px;">
+                    <label>Número o Animalito:</label>
+                    <input type="text" id="input-animal" placeholder="Ej. 00, 5, Carnero" autocomplete="off">
+                </div>
+                <div class="form-group" style="flex: 1; margin-bottom: 5px;">
+                    <label>Monto (Bs):</label>
+                    <input type="number" id="input-monto" min="1" placeholder="Ej. 50">
+                </div>
+            </div>
+
+            <button class="btn-main" onclick="agregarAlCarrito()">Agregar al Carrito (Multibanca)</button>
+
+            <h3 style="margin: 10px 0 5px 0; font-size:15px;">Carrito de Compras General</h3>
+            <div style="max-height: 140px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Lotería</th>
+                            <th>Horario</th>
+                            <th>Jugada</th>
+                            <th>Monto (Bs)</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-carrito"></tbody>
+                </table>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+                <h3 style="margin:0; font-size:16px;">Total a Pagar: <span id="total-carrito">0.00</span> Bs</h3>
+                <button class="btn-main" style="background: var(--primary-color); width: auto; padding: 10px 20px; margin:0;" onclick="printAndSave()">🖨️ Imprimir y Guardar</button>
+            </div>
+        </div>
+        <!-- PANEL DE RESULTADOS -->
+        <div id="panel-resultados" class="panel">
+            <h2 style="margin-top:0; font-size:18px;">Cargar Resultados del Día</h2>
+            <div class="card-seccion">
+                <div style="display: flex; gap: 8px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Lotería:</label>
+                        <select id="res-loteria" onchange="renderizarCasillasResultados()">
+                            <option value="Lotto Activo">Lotto Activo</option>
+                            <option value="La Granjita">La Granjita</option>
+                            <option value="Selva Plus">Selva Plus</option>
+                            <option value="Guácharo Activo">Guácharo Activo</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Fecha:</label>
+                        <input type="date" id="res-fecha" onchange="renderizarCasillasResultados()">
+                    </div>
+                </div>
+
+                <h3 style="margin: 5px 0; font-size:14px;">Horarios de la Lotería Seleccionada</h3>
+                <div id="grid-horarios-resultados" class="grid-horarios" style="max-height: 180px; overflow-y: auto;"></div>
+                <button class="btn-main" onclick="guardarResultadosHorarios()">Guardar Resultados del Día</button>
+            </div>
+        </div>
+
+        <!-- PANEL DE PAGAR / ANULAR CON INPUTS NUMÉRICOS -->
+        <div id="panel-ganadores" class="panel">
+            <h2 style="margin-top:0; font-size:18px;">Módulo de Pagos y Anulaciones</h2>
+            <div class="card-seccion">
+                <h3 style="margin-top:0; font-size:14px;">Verificar / Pagar Ticket Ganador</h3>
+                <div class="form-group">
+                    <label>Ingrese solo los números del Ticket (Ej. 987654):</label>
+                    <div style="display: flex; align-items: center; border: 1px solid #ccc; border-radius: 5px; background: #fff; overflow: hidden;">
+                        <span style="background: #e2e8f0; padding: 8px 10px; font-weight: bold; border-right: 1px solid #ccc; color: #555; font-size: 13px;">TKT-</span>
+                        <input type="number" id="input-buscar-codigo" placeholder="987654" style="border: none; outline: none; padding: 8px; width: 100%;">
+                    </div>
+                </div>
+                <button class="btn-main" style="background: var(--warning-color);" onclick="verificarTicketGanador()">Verificar Premio Consolidado</button>
+                <div id="resultado-verificacion" style="margin-top: 10px;"></div>
+            </div>
+
+            <div class="card-seccion" style="border-color: #f5b7b1;">
+                <h3 style="color: var(--danger-color); margin-top:0; font-size:14px;">Anular Ticket (Límite: 5 minutos)</h3>
+                <div class="form-group">
+                    <label>Ingrese solo los números del Ticket a Anular:</label>
+                    <div style="display: flex; align-items: center; border: 1px solid #ccc; border-radius: 5px; background: #fff; overflow: hidden;">
+                        <span style="background: #e2e8f0; padding: 8px 10px; font-weight: bold; border-right: 1px solid #ccc; color: #555; font-size: 13px;">TKT-</span>
+                        <input type="number" id="input-anular-codigo" placeholder="123456" style="border: none; outline: none; padding: 8px; width: 100%;">
+                    </div>
+                </div>
+                <button class="btn-main" style="background: var(--danger-color);" onclick="procesarAnulacionPorCodigo()">Anular Ticket del Sistema</button>
+            </div>
+        </div>
+        <!-- PANEL DE TICKETS GANADORES -->
+        <div id="panel-reportes" class="panel">
+            <h2 style="margin-top:0; font-size:18px;">Historial de Tickets Ganadores</h2>
+            <div class="card-seccion" style="padding: 8px;">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Seleccionar Fecha a Consultar:</label>
+                    <input type="date" id="filtro-fecha-ganadores" onchange="filtrarTicketsGanadoresFecha()">
+                </div>
+            </div>
+            <div style="max-height: 250px; overflow-y: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Fecha / Hora</th>
+                            <th>Total (Bs)</th>
+                            <th>Premio (Bs)</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-tickets-ganadores">
+                        <tr><td colspan="6" style="color: #888;">Seleccione una fecha.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PANEL DE BALANCE DE CAJA -->
+        <div id="panel-balance" class="panel">
+            <h2 style="margin-top:0; font-size:18px;">Balance de Caja y Ganancia Real</h2>
+            <div class="card-seccion">
+                <div style="display: flex; gap: 8px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Desde:</label>
+                        <input type="date" id="filtro-balance-inicio" onchange="consultarBalanceRango()">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Hasta:</label>
+                        <input type="date" id="filtro-balance-fin" onchange="consultarBalanceRango()">
+                    </div>
+                </div>
+                <div id="resultado-balance-fecha" style="background: #eef2f7; padding: 10px; border-radius: 6px; margin-top: 8px; font-size: 13px;">
+                    <p style="margin:0;">Seleccione un rango de fechas.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL DE CONFIGURACIÓN -->
+        <div id="panel-configuracion" class="panel">
+            <h2 style="margin-top:0; font-size:18px;">Configuración de Límites por Animales</h2>
+            <div class="card-seccion">
+                <div style="display: flex; gap: 8px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Lotería:</label>
+                        <select id="config-loteria" onchange="cargarConfiguracionLimites()">
+                            <option value="Lotto Activo">Lotto Activo (0-36)</option>
+                            <option value="La Granjita">La Granjita (0-36)</option>
+                            <option value="Selva Plus">Selva Plus (0-36)</option>
+                            <option value="Guácharo Activo">Guácharo Activo (0-75)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>🔍 Buscar Animal:</label>
+                        <input type="text" id="config-busqueda" placeholder="Número o nombre..." oninput="filtrarMatrizLimites()">
+                    </div>
+                </div>
+                <div style="max-height: 180px; overflow-y: auto; border: 1px solid #ccc; border-radius: 5px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Animal / Número</th>
+                                <th>Límite (Bs)</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-matriz-limites"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const horariosLoterias = {
+            "Selva Plus": ["08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM"],
+            "La Granjita": ["08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM"],
+            "Guácharo Activo": ["08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM"],
+            "Lotto Activo": ["08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM"]
+        };
+
+        const animalesLotto36 = [
+            {id: "0", nombre: "Delfín"}, {id: "00", nombre: "Ballena"}, {id: "1", nombre: "Carnero"}, {id: "2", nombre: "Toro"},
+            {id: "3", nombre: "Ciempiés"}, {id: "4", nombre: "Alacrán"}, {id: "5", nombre: "León"}, {id: "6", nombre: "Rana"},
+            {id: "7", nombre: "Perico"}, {id: "8", nombre: "Ratón"}, {id: "9", nombre: "Águila"}, {id: "10", nombre: "Tigre"},
+            {id: "11", nombre: "Gato"}, {id: "12", nombre: "Caballo"}, {id: "13", nombre: "Mono"}, {id: "14", nombre: "Paloma"},
+            {id: "15", nombre: "Zorro"}, {id: "16", nombre: "Oso"}, {id: "17", nombre: "Pavo"}, {id: "18", nombre: "Burro"},
+            {id: "19", nombre: "Chivo"}, {id: "20", nombre: "Cochino"}, {id: "21", nombre: "Gallo"}, {id: "22", nombre: "Camello"},
+            {id: "23", nombre: "Cebra"}, {id: "24", nombre: "Iguana"}, {id: "25", nombre: "Gallina"}, {id: "26", nombre: "Vaca"},
+            {id: "27", nombre: "Perro"}, {id: "28", nombre: "Zamuro"}, {id: "29", nombre: "Elefante"}, {id: "30", nombre: "Caimán"},
+            {id: "31", nombre: "Lapa"}, {id: "32", nombre: "Ardilla"}, {id: "33", nombre: "Pescado"}, {id: "34", nombre: "Venado"},
+            {id: "35", nombre: "Jirafa"}, {id: "36", nombre: "Culebra"}
+        ];
+
+        let limitesLoterias = {
+            "Lotto Activo": {}, "La Granjita": {}, "Selva Plus": {}, "Guácharo Activo": {}
+        };
+
+        function inicializarLimites() {
+            Object.keys(limitesLoterias).forEach(lot => {
+                let max = (lot === "Guácharo Activo") ? 75 : 36;
+                for (let i = 0; i <= max; i++) {
+                    limitesLoterias[lot][i.toString()] = 1000;
+                }
+                limitesLoterias[lot]["00"] = 1000;
+            });
+        }
+        inicializarLimites();
+
+        let carrito = [];
+        let baseDatos = []; 
+        let resultadosGlobales = {}; 
+        let agenciasSeleccionadasVenta = ["Lotto Activo"];
+        let horariosSeleccionadosVenta = [];
+        setInterval(() => {
+            let options = { timeZone: 'America/Caracas', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            let horaVzla = new Date().toLocaleTimeString('en-US', options);
+            document.getElementById('reloj-venezuela').innerText = horaVzla;
+            if (document.getElementById('panel-ventas').classList.contains('active')) {
+                actualizarHorariosDisponiblesVenta();
+            }
+        }, 1000);
+
+        function showPanel(panelId) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+            document.getElementById('panel-' + panelId).classList.add('active');
+            document.getElementById('tab-' + panelId).classList.add('active');
+            
+            if (panelId === 'ventas') actualizarHorariosDisponiblesVenta();
+            if (panelId === 'configuracion') cargarConfiguracionLimites();
+            if (panelId === 'resultados') {
+                document.getElementById('res-fecha').valueAsDate = new Date();
+                renderizarCasillasResultados();
+            }
+            if (panelId === 'reportes') {
+                document.getElementById('filtro-fecha-ganadores').valueAsDate = new Date();
+                filtrarTicketsGanadoresFecha();
+            }
+            if (panelId === 'balance') {
+                let hoy = new Date().toISOString().split('T')[0];
+                document.getElementById('filtro-balance-inicio').value = hoy;
+                document.getElementById('filtro-balance-fin').value = hoy;
+                consultarBalanceRango();
+            }
+        }
+
+        function mostrarAlerta(mensaje) {
+            let alerta = document.getElementById('alerta-sistema');
+            alerta.innerText = mensaje;
+            alerta.style.display = 'block';
+            setTimeout(() => { alerta.style.display = 'none'; }, 4000);
+        }
+
+        function mostrarExito(mensaje) {
+            let exito = document.getElementById('exito-sistema');
+            exito.innerText = mensaje;
+            exito.style.display = 'block';
+            setTimeout(() => { exito.style.display = 'none'; }, 4000);
+        }
+
+        function parsearHoraSorteo(horarioStr) {
+            let [hora, minutoPeriodo] = horarioStr.split(':');
+            let [minuto, periodo] = minutoPeriodo.split(' ');
+            let h = parseInt(hora);
+            let m = parseInt(minuto);
+            if (periodo === 'PM' && h !== 12) h += 12;
+            if (periodo === 'AM' && h === 12) h = 0;
+            return { h, m };
+        }
+        function toggleLoteriaVenta(elemento) {
+            let lotName = elemento.getAttribute('data-lot');
+            if (agenciasSeleccionadasVenta.includes(lotName)) {
+                if (agenciasSeleccionadasVenta.length === 1) {
+                    mostrarAlerta("⚠️ Debe seleccionar al menos una agencia.");
+                    return;
+                }
+                agenciasSeleccionadasVenta = agenciasSeleccionadasVenta.filter(l => l !== lotName);
+                elemento.classList.remove('activo');
+            } else {
+                agenciasSeleccionadasVenta.push(lotName);
+                elemento.classList.add('activo');
+            }
+            actualizarHorariosDisponiblesVenta();
+        }
+
+        function actualizarHorariosDisponiblesVenta() {
+            let contenedor = document.getElementById('contenedor-botones-horarios');
+            contenedor.innerHTML = '';
+            
+            let horariosComunes = [];
+            agenciasSeleccionadasVenta.forEach(lot => {
+                if (horariosLoterias[lot]) {
+                    horariosLoterias[lot].forEach(h => {
+                        if (!horariosComunes.includes(h)) horariosComunes.push(h);
+                    });
+                }
+            });
+
+            let ahora = new Date();
+            let horaActualMinutos = ahora.getHours() * 60 + ahora.getMinutes();
+            let hayDisponibles = false;
+
+            horariosComunes.forEach(hStr => {
+                let { h, m } = parsearHoraSorteo(hStr);
+                let minutosSorteo = h * 60 + m;
+                let minutosCierre = minutosSorteo - 5;
+
+                if (horaActualMinutos >= minutosCierre) return;
+
+                hayDisponibles = true;
+                let btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'btn-slot-opcion';
+                btn.innerText = hStr;
+
+                if (minutosCierre - horaActualMinutos <= 60) {
+                    btn.classList.add('proximo');
+                    btn.title = "¡Próximo a cerrar!";
+                }
+
+                if (horariosSeleccionadosVenta.includes(hStr)) {
+                    btn.classList.add('activo');
+                }
+
+                btn.onclick = () => {
+                    if (horariosSeleccionadosVenta.includes(hStr)) {
+                        horariosSeleccionadosVenta = horariosSeleccionadosVenta.filter(item => item !== hStr);
+                        btn.classList.remove('activo');
+                    } else {
+                        horariosSeleccionadosVenta.push(hStr);
+                        btn.classList.add('activo');
+                    }
+                    document.getElementById('texto-horario-seleccionado').innerText = horariosSeleccionadosVenta.length > 0 
+                        ? "Horarios Seleccionados (" + horariosSeleccionadosVenta.length + "): " + horariosSeleccionadosVenta.join(', ')
+                        : "Ningún horario seleccionado";
+                };
+
+                contenedor.appendChild(btn);
+            });
+
+            if (!hayDisponibles) {
+                contenedor.innerHTML = `<span style="color:var(--danger-color); font-size:11px;">No hay sorteos disponibles.</span>`;
+            }
+        }
+
+        function obtenerNombreAnimal(loteria, jugada) {
+            let jClean = jugada.trim().toUpperCase();
+            if (loteria === 'Guácharo Activo') {
+                let num = parseInt(jClean);
+                if (isNaN(num) || num < 0 || num > 75) return null;
+                return "Guácharo #" + num;
+            } else {
+                let encontrado = animalesLotto36.find(a => a.id === jClean || a.nombre.toUpperCase() === jClean);
+                if (encontrado) return `${encontrado.id} - ${encontrado.nombre}`;
+                return null;
+            }
+        }
+
+        function agregarAlCarrito() {
+            let inputVal = document.getElementById('input-animal').value.trim();
+            let monto = parseFloat(document.getElementById('input-monto').value);
+
+            if (agenciasSeleccionadasVenta.length === 0) {
+                mostrarAlerta("⚠️ Seleccione al menos una agencia.");
+                return;
+            }
+            if (horariosSeleccionadosVenta.length === 0) {
+                mostrarAlerta("⚠️ Seleccione al menos un horario.");
+                return;
+            }
+            if (!inputVal) {
+                mostrarAlerta("⚠️ Ingrese un número o animal.");
+                return;
+            }
+            if (isNaN(monto) || monto <= 0) {
+                mostrarAlerta("⚠️ Ingrese un monto válido.");
+                return;
+            }
+
+            let claveJugada = inputVal.toUpperCase();
+            let itemMatch = animalesLotto36.find(a => a.nombre.toUpperCase() === claveJugada);
+            if (itemMatch) claveJugada = itemMatch.id;
+
+            agenciasSeleccionadasVenta.forEach(loteria => {
+                let nombreOficial = obtenerNombreAnimal(loteria, inputVal);
+                if (!nombreOficial) return;
+
+                horariosSeleccionadosVenta.forEach(horario => {
+                    if (horariosLoterias[loteria] && horariosLoterias[loteria].includes(horario)) {
+                        let limiteMax = limitesLoterias[loteria][claveJugada] !== undefined ? limitesLoterias[loteria][claveJugada] : 1000;
+                        let acumuladoActual = carrito.filter(i => i.lot === loteria && i.horario === horario && i.animalClave === claveJugada).reduce((sum, i) => sum + i.mont, 0);
+                        
+                        if ((acumuladoActual + monto) <= limiteMax) {
+                            carrito.push({ lot: loteria, horario: horario, animalClave: claveJugada, animalDetalle: nombreOficial, mont: monto });
+                        }
+                    }
+                });
+            });
+
+            document.getElementById('input-animal').value = '';
+            document.getElementById('input-monto').value = '';
+            document.getElementById('input-animal').focus();
+            renderCart();
+        }
+
+        function eliminarDelCarrito(index) {
+            carrito.splice(index, 1);
+            renderCart();
+        }
+
+        function renderCart() {
+            let tbody = document.getElementById('tabla-carrito');
+            tbody.innerHTML = '';
+            let total = 0;
+
+            carrito.forEach((item, index) => {
+                total += item.mont;
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${item.lot}</td>
+                        <td>${item.horario}</td>
+                        <td>${item.animalDetalle}</td>
+                        <td>${item.mont.toFixed(2)} Bs</td>
+                        <td><button onclick="eliminarDelCarrito(${index})" style="background:var(--danger-color); color:white; border:none; padding:3px 6px; border-radius:3px; cursor:pointer;">X</button></td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('total-carrito').innerText = total.toFixed(2);
+        }
+
+        function cargarConfiguracionLimites() {
+            let loteria = document.getElementById('config-loteria').value;
+            renderizarMatrizLimites(loteria);
+        }
+
+        function renderizarMatrizLimites(loteria, filtro = "") {
+            let tbody = document.getElementById('tabla-matriz-limites');
+            tbody.innerHTML = '';
+            let listaItems = [];
+            if (loteria === 'Guácharo Activo') {
+                for (let i = 0; i <= 75; i++) {
+                    listaItems.push({ id: i.toString(), nombre: "Guácharo #" + i });
+                }
+            } else {
+                listaItems = animalesLotto36;
+            }
+
+            let filtrados = listaItems.filter(item => 
+                item.id.includes(filtro) || item.nombre.toLowerCase().includes(filtro.toLowerCase())
+            );
+
+            filtrados.forEach(item => {
+                let limiteActual = limitesLoterias[loteria][item.id] !== undefined ? limitesLoterias[loteria][item.id] : 1000;
+                tbody.innerHTML += `
+                    <tr>
+                        <td><b>${item.id}</b> - ${item.nombre}</td>
+                        <td><input type="number" value="${limiteActual}" id="limite-${loteria}-${item.id}" style="width:100px; text-align:center; padding:4px;" onchange="actualizarLimiteValor('${loteria}', '${item.id}', this.value)"></td>
+                        <td><span style="color:var(--accent-color); font-size:11px;">Auto</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filtrarMatrizLimites() {
+            let loteria = document.getElementById('config-loteria').value;
+            let filtro = document.getElementById('config-busqueda').value.trim();
+            renderizarMatrizLimites(loteria, filtro);
+        }
+
+        function actualizarLimiteValor(loteria, idAnimal, valor) {
+            let valNum = parseFloat(valor);
+            if (!isNaN(valNum) && valNum >= 0) limitesLoterias[loteria][idAnimal] = valNum;
+        }
+        function renderizarCasillasResultados() {
+            let loteria = document.getElementById('res-loteria').value;
+            let contenedor = document.getElementById('grid-horarios-resultados');
+            contenedor.innerHTML = '';
+            let horarios = horariosLoterias[loteria];
+            let fechaStr = document.getElementById('res-fecha').value;
+
+            horarios.forEach(h => {
+                let valExistente = (resultadosGlobales[fechaStr] && resultadosGlobales[fechaStr][loteria] && resultadosGlobales[fechaStr][loteria][h]) ? resultadosGlobales[fechaStr][loteria][h] : '';
+                contenedor.innerHTML += `
+                    <div class="form-group" style="margin-bottom:6px;">
+                        <label>${h}</label>
+                        <input type="text" class="input-resultado-horario" data-horario="${h}" value="${valExistente}" placeholder="Ej. 00">
+                    </div>
+                `;
+            });
+        }
+
+        function guardarResultadosHorarios() {
+            let loteria = document.getElementById('res-loteria').value;
+            let fechaStr = document.getElementById('res-fecha').value;
+            if (!fechaStr) {
+                mostrarAlerta("⚠️ Seleccione una fecha válida.");
+                return;
+            }
+
+            let inputsHorarios = document.querySelectorAll('.input-resultado-horario');
+            if (!resultadosGlobales[fechaStr]) resultadosGlobales[fechaStr] = {};
+            if (!resultadosGlobales[fechaStr][loteria]) resultadosGlobales[fechaStr][loteria] = {};
+
+            inputsHorarios.forEach(input => {
+                let horario = input.getAttribute('data-horario');
+                let valorRes = input.value.trim().toUpperCase();
+                if (valorRes) {
+                    resultadosGlobales[fechaStr][loteria][horario] = valorRes;
+                }
+            });
+
+            mostrarExito("✅ Resultados guardados correctamente para " + loteria);
+        }
+
+        function procesarAnulacionPorCodigo() {
+            let inputVal = document.getElementById('input-anular-codigo').value.trim();
+            if (!inputVal) {
+                mostrarAlerta("⚠️ Ingrese el número del ticket a anular.");
+                return;
+            }
+            let codigoBuscado = 'TKT-' + inputVal;
+            let ticket = baseDatos.find(t => t.codigo === codigoBuscado);
+
+            if (!ticket) {
+                mostrarAlerta(`⚠️ El ticket ${codigoBuscado} no existe.`);
+                return;
+            }
+            if (ticket.estado === 'Anulado') {
+                mostrarAlerta("⚠️ Este ticket ya está anulado.");
+                return;
+            }
+            if (ticket.estado === 'Pagado') {
+                mostrarAlerta("⚠️ No se puede anular un ticket ya pagado.");
+                return;
+            }
+
+            let ahora = new Date();
+            let diferenciaMinutos = (ahora - ticket.timestampEmision) / 60000;
+            if (diferenciaMinutos > 5) {
+                mostrarAlerta("❌ Han pasado más de 5 minutos; no se puede anular.");
+                return;
+            }
+
+            if (confirm(`¿Estás seguro de anular el ticket ${ticket.codigo}?`)) {
+                ticket.estado = 'Anulado';
+                mostrarExito("❌ Ticket anulado con éxito.");
+                document.getElementById('input-anular-codigo').value = '';
+            }
+        }
+
+        function calcularPremioItem(item) {
+            let multiplicador = (item.lot === 'Guácharo Activo') ? 120 : 30;
+            return item.mont * multiplicador;
+        }
+
+        function evaluarTicketConsolidado(ticket) {
+            let resultadosFecha = resultadosGlobales[ticket.fechaOriginal];
+            let aciertos = [];
+            let totalPremio = 0;
+
+            if (!resultadosFecha) return { aciertos, totalPremio };
+
+            ticket.items.forEach(item => {
+                let ganadorHorario = resultadosFecha[item.lot] ? resultadosFecha[item.lot][item.horario] : null;
+                if (ganadorHorario && ganadorHorario.toUpperCase() === item.animalClave.toUpperCase()) {
+                    let premioIndividual = calcularPremioItem(item);
+                    aciertos.push({ ...item, premio: premioIndividual });
+                    totalPremio += premioIndividual;
+                }
+            });
+
+            return { aciertos, totalPremio };
+        }
+
+        function verificarTicketGanador() {
+            let inputVal = document.getElementById('input-buscar-codigo').value.trim();
+            let contenedor = document.getElementById('resultado-verificacion');
+            contenedor.innerHTML = '';
+
+            if (!inputVal) {
+                contenedor.innerHTML = `<div class="alerta" style="display:block;">⚠️ Ingrese el número del ticket.</div>`;
+                return;
+            }
+
+            let codigoBuscado = 'TKT-' + inputVal;
+            let ticket = baseDatos.find(t => t.codigo === codigoBuscado);
+            if (!ticket) {
+                contenedor.innerHTML = `<div class="alerta" style="display:block;">⚠️ El ticket ${codigoBuscado} no existe.</div>`;
+                return;
+            }
+            if (ticket.estado === 'Anulado') {
+                contenedor.innerHTML = `<div class="alerta" style="display:block;">❌ Este ticket está ANULADO.</div>`;
+                return;
+            }
+
+            let { aciertos, totalPremio } = evaluarTicketConsolidado(ticket);
+
+            if (aciertos.length > 0) {
+                ticket.montoPremio = totalPremio;
+                if (ticket.estado === 'Pendiente') ticket.estado = 'Ganador';
+
+                let listaJugadasHtml = ticket.items.map(i => {
+                    let esAcierto = aciertos.some(ac => ac.lot === i.lot && ac.horario === i.horario && ac.animalClave === i.animalClave);
+                    let estilo = esAcierto ? 'class="texto-rojo-ganador"' : '';
+                    let etiquetaGanador = esAcierto ? ' 🔥 ¡GANADOR!' : '';
+                    return `<li ${estilo}><b>${i.lot}</b> (${i.horario}) — <b>${i.animalDetalle}</b>: ${i.mont} Bs ${etiquetaGanador}</li>`;
+                }).join('');
+
+                let btnPagarHtml = ticket.estado !== 'Pagado' 
+                    ? `<button onclick="marcarPagado('${ticket.codigo}')" class="btn-main" style="background:var(--accent-color); margin-top:8px;">Marcar Ticket como Pagado</button>`
+                    : `<p style="color:var(--accent-color); font-weight:bold; margin:5px 0;">✨ Este ticket ya fue pagado.</p>`;
+
+                contenedor.innerHTML = `
+                    <div style="background:#d4edda; color:#155724; padding:10px; border-radius:5px; border:1px solid #c3e6cb; font-size:13px;">
+                        <h3 style="margin:0 0 5px 0;">🎉 ¡TICKET GANADOR CONSOLIDADO!</h3>
+                        <p style="margin:2px 0;"><b>Código:</b> ${ticket.codigo}</p>
+                        <ul style="text-align: left; padding-left: 15px; margin: 5px 0;">
+                            ${listaJugadasHtml}
+                        </ul>
+                        <hr style="border: 1px solid #c3e6cb; margin:5px 0;">
+                        <h3 style="color: var(--danger-color); margin:2px 0;">TOTAL A PAGAR: ${totalPremio.toFixed(2)} Bs</h3>
+                        ${btnPagarHtml}
+                    </div>
+                `;
+            } else {
+                contenedor.innerHTML = `
+                    <div style="background:#fff3cd; color:#856404; padding:10px; border-radius:5px; border:1px solid #ffeeba; font-size:13px;">
+                        <h3 style="margin:0 0 5px 0;">💡 No Ganador</h3>
+                        <p style="margin:0;">El ticket <b>${ticket.codigo}</b> no tiene aciertos registrados.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function marcarPagado(codigo) {
+            let t = baseDatos.find(item => item.codigo === codigo);
+            if (t) {
+                t.estado = 'Pagado';
+                mostrarExito("✅ Ticket marcado como pagado exitosamente.");
+                document.getElementById('resultado-verificacion').innerHTML = '';
+                document.getElementById('input-buscar-codigo').value = '';
+            }
+        }
+        function filtrarTicketsGanadoresFecha() {
+            let fechaBuscada = document.getElementById('filtro-fecha-ganadores').value;
+            let tbody = document.getElementById('tabla-tickets-ganadores');
+            tbody.innerHTML = '';
+
+            let ticketsFiltrados = baseDatos.filter(t => t.fechaOriginal === fechaBuscada);
+
+            ticketsFiltrados.forEach(ticket => {
+                if (ticket.estado === 'Anulado') return;
+                let { aciertos, totalPremio } = evaluarTicketConsolidado(ticket);
+
+                if (aciertos.length > 0) {
+                    if (ticket.estado === 'Pendiente') ticket.estado = 'Ganador';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${ticket.codigo}</td>
+                            <td>${ticket.fechaOriginal} - ${ticket.horaEmision}</td>
+                            <td>${ticket.total.toFixed(2)} Bs</td>
+                            <td><b style="color:var(--danger-color);">${totalPremio.toFixed(2)} Bs</b></td>
+                            <td><span class="badge-pagado">${ticket.estado}</span></td>
+                            <td><button onclick="verDetalleJugadaTicket('${ticket.codigo}')" style="background:var(--primary-color); color:white; border:none; padding:4px 8px; border-radius:3px; cursor:pointer;">Ver</button></td>
+                        </tr>
+                    `;
+                }
+            });
+
+            if (tbody.innerHTML === '') {
+                tbody.innerHTML = `<tr><td colspan="6" style="color: #888;">No hay ganadores.</td></tr>`;
+            }
+        }
+
+        function verDetalleJugadaTicket(codigo) {
+            let ticket = baseDatos.find(t => t.codigo === codigo);
+            if (!ticket) return;
+
+            let { aciertos } = evaluarTicketConsolidado(ticket);
+            let aciertosClaves = aciertos.map(a => `${a.lot}-${a.horario}-${a.animalClave}`);
+
+            let detalleHtml = ticket.items.map(i => {
+                let claveItem = `${i.lot}-${i.horario}-${i.animalClave}`;
+                let esGanador = aciertosClaves.includes(claveItem);
+                let estilo = esGanador ? 'class="texto-rojo-ganador"' : '';
+                let etiqueta = esGanador ? ' 🔥 ¡GANADOR!' : '';
+                return `<li ${estilo}><b>${i.lot}</b> (${i.horario}) — <b>${i.animalDetalle}</b>: ${i.mont} Bs ${etiqueta}</li>`;
+            }).join('');
+            
+            let modalOld = document.getElementById('modal-detalle-jugada');
+            if (modalOld) modalOld.remove();
+
+            let modal = document.createElement('div');
+            modal.id = 'modal-detalle-jugada';
+            modal.innerHTML = `
+                <style>
+                    #modal-detalle-jugada { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+                    .detalle-box { background: white; padding: 15px; border-radius: 8px; width: 320px; max-height: 90vh; overflow-y: auto; font-family: sans-serif; font-size: 13px; }
+                </style>
+                <div class="detalle-box">
+                    <h3 style="margin-top:0;">Detalle: ${ticket.codigo}</h3>
+                    <p><b>Fecha:</b> ${ticket.fechaFormateada} - ${ticket.horaEmision}</p>
+                    <ul style="text-align: left; padding-left: 15px;">
+                        ${detalleHtml}
+                    </ul>
+                    <hr>
+                    <p><b>Apostado:</b> ${ticket.total.toFixed(2)} Bs</p>
+                    <p><b>Premio:</b> ${(ticket.montoPremio || 0).toFixed(2)} Bs</p>
+                    <button onclick="document.getElementById('modal-detalle-jugada').remove()" class="btn-main" style="background:var(--danger-color); margin-top:8px;">Cerrar</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function consultarBalanceRango() {
+            let fechaInicio = document.getElementById('filtro-balance-inicio').value;
+            let fechaFin = document.getElementById('filtro-balance-fin').value;
+            let contenedor = document.getElementById('resultado-balance-fecha');
+            if (!fechaInicio || !fechaFin) return;
+
+            let ticketsRango = baseDatos.filter(t => t.fechaOriginal >= fechaInicio && t.fechaOriginal <= fechaFin && t.estado !== 'Anulado');
+            let totalVentas = ticketsRango.reduce((sum, t) => sum + t.total, 0);
+
+            let premiosPagadosEfectivo = 0;
+            let premiosTotalesGanados = 0;
+            let premiosPendientesPorPagar = 0;
+
+            ticketsRango.forEach(ticket => {
+                let { totalPremio } = evaluarTicketConsolidado(ticket);
+                if (totalPremio > 0) {
+                    premiosTotalesGanados += totalPremio;
+                    if (ticket.estado === 'Pagado') {
+                        premiosPagadosEfectivo += totalPremio;
+                    } else {
+                        premiosPendientesPorPagar += totalPremio;
+                    }
+                }
+            });
+
+            let dineroEnCaja = totalVentas - premiosPagadosEfectivo;
+            let gananciaRealBanca = totalVentas - premiosTotalesGanados;
+            let claseGanancia = gananciaRealBanca >= 0 ? 'balance-positivo' : 'balance-negativo';
+
+            contenedor.innerHTML = `
+                <h3 style="margin:0 0 5px 0; font-size:14px;">Resumen (${fechaInicio} al ${fechaFin})</h3>
+                <p style="margin:2px 0;"><b>Total Ventas:</b> ${totalVentas.toFixed(2)} Bs</p>
+                <p style="margin:2px 0;"><b>Premios Pagados:</b> ${premiosPagadosEfectivo.toFixed(2)} Bs</p>
+                <p style="margin:2px 0;"><b>Premios Pendientes:</b> ${premiosPendientesPorPagar.toFixed(2)} Bs</p>
+                <hr style="border: 1px solid #ccc; margin:5px 0;">
+                <p style="margin:2px 0;"><b>1. Dinero en Caja (Efectivo):</b> ${dineroEnCaja.toFixed(2)} Bs</p>
+                <p style="margin:2px 0;"><b>2. Ganancia Real Banca:</b> <span class="${claseGanancia}">${gananciaRealBanca.toFixed(2)} Bs</span></p>
+            `;
+        }
+
+        function printAndSave() {
+            if (carrito.length === 0) {
+                mostrarAlerta("⚠️ Agregue jugadas al carrito.");
+                return;
+            }
+
+            let codigo = 'TKT-' + Math.floor(100000 + Math.random() * 900000);
+            let fechaActualYMD = new Date().toISOString().split('T')[0];
+            let fechaFormateada = new Date().toLocaleDateString();
+            let horaActual = new Date().toLocaleTimeString();
+            let totalVenta = carrito.reduce((acc, curr) => acc + curr.mont, 0);
+            
+            baseDatos.push({ 
+                codigo, 
+                fechaOriginal: fechaActualYMD, 
+                fechaFormateada: fechaFormateada,
+                horaEmision: horaActual, 
+                timestampEmision: new Date(),
+                items: [...carrito], 
+                total: totalVenta, 
+                estado: 'Pendiente' 
+            });
+
+            let modalOld = document.getElementById('modal-ticket-prev');
+            if (modalOld) modalOld.remove();
+
+            let modal = document.createElement('div');
+            modal.id = 'modal-ticket-prev';
+            modal.innerHTML = `
+                <style>
+                    #modal-ticket-prev {
+                        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                        background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 9999;
+                    }
+                    .ticket-box {
+                        background: white; padding: 10px; border-radius: 8px; width: 240px; max-height: 90vh; overflow-y: auto;
+                        font-family: monospace; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                    }
+                    .ticket-acciones { display: flex; gap: 5px; margin-top: 10px; }
+                    .ticket-acciones button { flex: 1; padding: 8px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px; color: white; }
+                    
+                    /* Configuración estricta para Impresora Térmica 58mm */
+                    @media print {
+                        @page { size: 48mm auto; margin: 0mm; }
+                        body * { visibility: hidden; }
+                        #ticket-content-print, #ticket-content-print * { visibility: visible; }
+                        #ticket-content-print { position: absolute; left: 0; top: 0; width: 48mm; padding: 2mm; box-sizing: border-box; }
+                        .ticket-acciones { display: none; }
+                        #modal-ticket-prev { background: none; position: static; }
+                    }
+                </style>
+                <div class="ticket-box">
+                    <div id="ticket-content-print">
+                        <h2 style="margin:0; font-size:14px;">Lotería - Triunfo</h2>
+                        <p style="font-size:10px; margin:2px 0;">Cod: ${codigo}<br>${fechaFormateada} - ${horaActual}</p>
+                        <hr style="border: 1px dashed #000; margin: 4px 0;">
+                        <div style="text-align:left; font-size:11px;">
+                            ${carrito.map(i => `
+                                <div style="margin-bottom:4px; border-bottom:1px dotted #ccc; padding-bottom:2px;">
+                                    <div style="font-weight:bold;">${i.lot} - ${i.horario}</div>
+                                    <div><b>${i.animalDetalle}</b> — ${i.mont} Bs</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <hr style="border: 1px dashed #000; margin: 4px 0;">
+                        <h3 style="margin:4px 0; font-size:13px;">TOTAL: ${totalVenta.toFixed(2)} Bs</h3>
+                        <hr style="border: 1px dashed #000; margin: 4px 0;">
+                        <p style="font-size:8px; margin:3px 0; line-height:1.1; text-align:justify;">
+                            Verifique su ticket. Válido por 3 días.
+                        </p>
+                        <p style="font-size:9px; margin:3px 0; font-style:italic;">¡Gracias por su preferencia!</p>
+                    </div>
+                    <div class="ticket-acciones">
+                        <button onclick="window.print()" style="background:#27ae60;">🖨️ Imprimir</button>
+                        <button onclick="cerrarPreviaTicket()" style="background:#c0392b;">🔙 Regresar</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            window.cerrarPreviaTicket = function() {
+                document.getElementById('modal-ticket-prev').remove();
+                carrito = [];
+                horariosSeleccionadosVenta = [];
+                renderCart();
+                showPanel('ventas');
+            }
+        }
+    </script>
+</body>
+</html>
