@@ -766,7 +766,7 @@
                                 <input type="number" id="input-monto" min="1" placeholder="Ej. 50">
                             </div>
                         </div>
-                        <button class="btn-main" onclick="agregarAlCarrito()">➕ Agregar jugada</button>
+++                        <button class="btn-main" onclick="agregarAlCarrito()">➕ Agregar jugada</button>
                     </div>
 
                     <div class="ventas-bloque ventas-carrito">
@@ -913,7 +913,7 @@
                             <select id="config-loteria" onchange="cargarConfiguracionLimites()">
                                 <option value="Lotto Activo">Lotto Activo (0-36)</option>
                                 <option value="La Granjita">La Granjita (0-36)</option>
-                                <option value="Selva Plus">Selva Plus (0-36)</option>
+                                <option value="Selva Plus">Selva Plus (0-99)</option>
                                 <option value="Guácharo Activo">Guácharo Activo (0-75)</option>
                             </select>
                         </div>
@@ -959,13 +959,51 @@
             {id: "35", nombre: "Jirafa"}, {id: "36", nombre: "Culebra"}
         ];
 
+        const animalesSelva99 = [
+            {id: "00", nombre: "Delfín"}, {id: "0", nombre: "Ballena"}, {id: "01", nombre: "Carnero"}, {id: "02", nombre: "Toro"},
+            {id: "03", nombre: "Ciempiés"}, {id: "04", nombre: "Alacrán"}, {id: "05", nombre: "León"}, {id: "06", nombre: "Rana"},
+            {id: "07", nombre: "Perico"}, {id: "08", nombre: "Ratón"}, {id: "09", nombre: "Águila"}, {id: "10", nombre: "Tigre"},
+            {id: "11", nombre: "Gato"}, {id: "12", nombre: "Caballo"}, {id: "13", nombre: "Mono"}, {id: "14", nombre: "Paloma"},
+            {id: "15", nombre: "Zorro"}, {id: "16", nombre: "Oso"}, {id: "17", nombre: "Pavo"}, {id: "18", nombre: "Burro"},
+            {id: "19", nombre: "Chivo"}, {id: "20", nombre: "Cochino"}, {id: "21", nombre: "Gallo"}, {id: "22", nombre: "Camello"},
+            {id: "23", nombre: "Cebra"}, {id: "24", nombre: "Iguana"}, {id: "25", nombre: "Gallina"}, {id: "26", nombre: "Vaca"},
+            {id: "27", nombre: "Perro"}, {id: "28", nombre: "Zamuro"}, {id: "29", nombre: "Elefante"}, {id: "30", nombre: "Caimán"},
+            {id: "31", nombre: "Lapa"}, {id: "32", nombre: "Ardilla"}, {id: "33", nombre: "Pescado"}, {id: "34", nombre: "Venado"},
+            {id: "35", nombre: "Jirafa"}, {id: "36", nombre: "Culebra"},
+            {id: "37", nombre: "Gato Negro / Tigrito"}, {id: "38", nombre: "Otorongo / Jaguar"}, {id: "39", nombre: "Cunaguaro"},
+            {id: "40", nombre: "Caimán Negro"}, {id: "41", nombre: "Tucán"}, {id: "42", nombre: "Guacamaya"},
+            {id: "43", nombre: "Cacatúa"}, {id: "44", nombre: "Chiricoca"}, {id: "45", nombre: "Turpial"},
+            {id: "46", nombre: "Colibrí"}, {id: "47", nombre: "Cardenal"}, {id: "48", nombre: "Flamenco"},
+            {id: "49", nombre: "Garza"}, {id: "50", nombre: "Pelícano"}, {id: "51", nombre: "Cisne"},
+            {id: "52", nombre: "Pato"}, {id: "53", nombre: "Ganso"}, {id: "54", nombre: "Gallito de las Rocas"},
+            {id: "55", nombre: "Cóndor"}, {id: "56", nombre: "Gavilán"}, {id: "57", nombre: "Lechuza"},
+            {id: "58", nombre: "Búho"}, {id: "59", nombre: "Murciélago"}, {id: "60", nombre: "Chigüire"},
+            {id: "61", nombre: "Picure"}, {id: "62", nombre: "Báquiro"}, {id: "63", nombre: "Danta"},
+            {id: "64", nombre: "Oso Hormiguero"}, {id: "65", nombre: "Oso Frontino"}, {id: "66", nombre: "Perezoso"},
+            {id: "67", nombre: "Armadillo / Cachicamo"}, {id: "68", nombre: "Cunaguaro Chico"}, {id: "69", nombre: "Manatí"},
+            {id: "70", nombre: "Tonina"}, {id: "71", nombre: "Tiburón"}, {id: "72", nombre: "Raya"},
+            {id: "73", nombre: "Carite"}, {id: "74", nombre: "Pargo"}, {id: "75", nombre: "Coro-Coro"},
+            {id: "76", nombre: "Pavón"}, {id: "77", nombre: "Bagre"}, {id: "78", nombre: "Temblador"},
+            {id: "79", nombre: "Anguila"}, {id: "80", nombre: "Anaconda"}, {id: "81", nombre: "Boa"},
+            {id: "82", nombre: "Tragavenado"}, {id: "83", nombre: "Mapanare"}, {id: "84", nombre: "Coral"},
+            {id: "85", nombre: "Cascabel"}, {id: "86", nombre: "Morrocoy"}, {id: "87", nombre: "Tortuga arrau"},
+            {id: "88", nombre: "Iguana Verde"}, {id: "89", nombre: "Tuqueque"}, {id: "90", nombre: "Camaleón"},
+            {id: "91", nombre: "Salamandra"}, {id: "92", nombre: "Sapo"}, {id: "93", nombre: "Escarabajo"},
+            {id: "94", nombre: "Mariposa"}, {id: "95", nombre: "Abeja"}, {id: "96", nombre: "Avispa"},
+            {id: "97", nombre: "Hormiga"}, {id: "98", nombre: "Bachaco"}, {id: "99", nombre: "Saltamontes"}
+        ];
+
+        function obtenerAnimalesLoteria(loteria) {
+            return loteria === 'Selva Plus' ? animalesSelva99 : animalesLotto36;
+        }
+
         let limitesLoterias = {
             "Lotto Activo": {}, "La Granjita": {}, "Selva Plus": {}, "Guácharo Activo": {}
         };
 
         function inicializarLimites() {
             Object.keys(limitesLoterias).forEach(lot => {
-                let max = (lot === "Guácharo Activo") ? 75 : 36;
+                let max = lot === "Guácharo Activo" ? 75 : lot === "Selva Plus" ? 99 : 36;
                 for (let i = 0; i <= max; i++) {
                     limitesLoterias[lot][i.toString()] = 1000;
                 }
@@ -980,6 +1018,56 @@
         let historialGuardadoResultados = {};
         let agenciasSeleccionadasVenta = ["Lotto Activo"];
         let horariosSeleccionadosVenta = [];
+
+        const CLAVE_ALMACENAMIENTO = 'loteriaTriunfoDatosV1';
+
+        function guardarDatosPermanentes() {
+            try {
+                localStorage.setItem(CLAVE_ALMACENAMIENTO, JSON.stringify({
+                    baseDatos,
+                    resultadosGlobales,
+                    limitesLoterias,
+                    historialGuardadoResultados,
+                    ultimaActualizacion: new Date().toISOString()
+                }));
+            } catch (error) {
+                console.error('No se pudieron guardar los datos permanentes.', error);
+                mostrarAlerta('⚠️ No se pudo guardar. Verifique que el navegador permita almacenamiento.');
+            }
+        }
+
+        function cargarDatosPermanentes() {
+            let datosGuardados = localStorage.getItem(CLAVE_ALMACENAMIENTO);
+            if (!datosGuardados) return;
+
+            try {
+                let datos = JSON.parse(datosGuardados);
+                baseDatos = Array.isArray(datos.baseDatos) ? datos.baseDatos : [];
+                baseDatos.forEach(ticket => {
+                    if (ticket.timestampEmision) ticket.timestampEmision = new Date(ticket.timestampEmision);
+                });
+                resultadosGlobales = datos.resultadosGlobales || {};
+                historialGuardadoResultados = datos.historialGuardadoResultados || {};
+                if (datos.limitesLoterias) {
+                    Object.keys(limitesLoterias).forEach(loteria => {
+                        if (datos.limitesLoterias[loteria]) {
+                            limitesLoterias[loteria] = { ...limitesLoterias[loteria], ...datos.limitesLoterias[loteria] };
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('No se pudieron cargar los datos guardados.', error);
+            }
+        }
+
+        cargarDatosPermanentes();
+
+        window.addEventListener('beforeunload', guardarDatosPermanentes);
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') guardarDatosPermanentes();
+        });
+        setInterval(guardarDatosPermanentes, 10000);
+
         setInterval(() => {
             let options = { timeZone: 'America/Caracas', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
             let horaVzla = new Date().toLocaleTimeString('en-US', options);
@@ -1006,7 +1094,7 @@
                 filtrarTicketsGanadoresFecha();
             }
             if (panelId === 'balance') {
-                let hoy = new Date().toISOString().split('T')[0];
+                let hoy = obtenerFechaLocal();
                 document.getElementById('filtro-balance-inicio').value = hoy;
                 document.getElementById('filtro-balance-fin').value = hoy;
                 consultarBalanceRango();
@@ -1120,10 +1208,30 @@
                 if (isNaN(num) || num < 0 || num > 75) return null;
                 return "Guácharo #" + num;
             } else {
-                let encontrado = animalesLotto36.find(a => a.id === jClean || a.nombre.toUpperCase() === jClean);
+                let animales = obtenerAnimalesLoteria(loteria);
+                let encontrado = animales.find(a => a.id === jClean || a.nombre.toUpperCase() === jClean);
+                if (!encontrado && loteria === 'Selva Plus' && /^\d{1,2}$/.test(jClean)) {
+                    let numero = parseInt(jClean, 10);
+                    encontrado = animales.find(a => a.id !== '0' && a.id !== '00' && parseInt(a.id, 10) === numero);
+                }
                 if (encontrado) return `${encontrado.id} - ${encontrado.nombre}`;
                 return null;
             }
+        }
+
+        function obtenerClaveAnimal(loteria, jugada) {
+            let valor = jugada.trim().toUpperCase();
+            if (loteria === 'Guácharo Activo') {
+                let numero = parseInt(valor, 10);
+                return !isNaN(numero) && numero >= 0 && numero <= 75 ? String(numero) : null;
+            }
+            let animales = obtenerAnimalesLoteria(loteria);
+            let encontrado = animales.find(a => a.id === valor || a.nombre.toUpperCase() === valor);
+            if (!encontrado && loteria === 'Selva Plus' && /^\d{1,2}$/.test(valor)) {
+                let numero = parseInt(valor, 10);
+                encontrado = animales.find(a => a.id !== '0' && a.id !== '00' && parseInt(a.id, 10) === numero);
+            }
+            return encontrado ? encontrado.id : null;
         }
 
         function agregarAlCarrito() {
@@ -1147,12 +1255,9 @@
                 return;
             }
 
-            let claveJugada = inputVal.toUpperCase();
-            let itemMatch = animalesLotto36.find(a => a.nombre.toUpperCase() === claveJugada);
-            if (itemMatch) claveJugada = itemMatch.id;
-
             agenciasSeleccionadasVenta.forEach(loteria => {
                 let nombreOficial = obtenerNombreAnimal(loteria, inputVal);
+                let claveJugada = obtenerClaveAnimal(loteria, inputVal);
                 if (!nombreOficial) return;
 
                 horariosSeleccionadosVenta.forEach(horario => {
@@ -1209,11 +1314,9 @@
             tbody.innerHTML = '';
             let listaItems = [];
             if (loteria === 'Guácharo Activo') {
-                for (let i = 0; i <= 75; i++) {
-                    listaItems.push({ id: i.toString(), nombre: "Guácharo #" + i });
-                }
+                listaItems = Array.from({ length: 76 }, (_, i) => ({ id: i.toString(), nombre: "Guácharo #" + i }));
             } else {
-                listaItems = animalesLotto36;
+                listaItems = obtenerAnimalesLoteria(loteria);
             }
 
             let filtrados = listaItems.filter(item => 
@@ -1240,7 +1343,10 @@
 
         function actualizarLimiteValor(loteria, idAnimal, valor) {
             let valNum = parseFloat(valor);
-            if (!isNaN(valNum) && valNum >= 0) limitesLoterias[loteria][idAnimal] = valNum;
+            if (!isNaN(valNum) && valNum >= 0) {
+                limitesLoterias[loteria][idAnimal] = valNum;
+                guardarDatosPermanentes();
+            }
         }
 
         function obtenerFechaLocal() {
@@ -1396,6 +1502,7 @@
             });
 
             if (cambios.length > 0) historialGuardadoResultados[claveGuardado] = true;
+            guardarDatosPermanentes();
 
             renderizarCasillasResultados();
             mostrarExito("✅ Resultados guardados correctamente para " + loteria);
@@ -1432,13 +1539,18 @@
 
             if (confirm(`¿Estás seguro de anular el ticket ${ticket.codigo}?`)) {
                 ticket.estado = 'Anulado';
+                guardarDatosPermanentes();
                 mostrarExito("❌ Ticket anulado con éxito.");
                 document.getElementById('input-anular-codigo').value = '';
             }
         }
 
         function calcularPremioItem(item) {
-            let multiplicador = (item.lot === 'Guácharo Activo') ? 120 : 30;
+            let multiplicador = item.lot === 'Guácharo Activo'
+                ? 60
+                : item.lot === 'Selva Plus'
+                    ? 80
+                    : 30;
             return item.mont * multiplicador;
         }
 
@@ -1451,9 +1563,14 @@
                 return Number.isNaN(numeroGuacharo) ? valor : String(numeroGuacharo);
             }
 
-            let animal = animalesLotto36.find(item =>
+            let animales = obtenerAnimalesLoteria(loteria);
+            let animal = animales.find(item =>
                 item.id.toUpperCase() === valor || item.nombre.toUpperCase() === valor
             );
+            if (!animal && loteria === 'Selva Plus' && /^\d{1,2}$/.test(valor)) {
+                let numero = parseInt(valor, 10);
+                animal = animales.find(item => item.id !== '0' && item.id !== '00' && parseInt(item.id, 10) === numero);
+            }
             if (animal) return animal.id;
 
             if (/^0\d$/.test(valor)) return valor.substring(1);
@@ -1545,6 +1662,7 @@
             let t = baseDatos.find(item => item.codigo === codigo);
             if (t) {
                 t.estado = 'Pagado';
+                guardarDatosPermanentes();
                 mostrarExito("✅ Ticket marcado como pagado exitosamente.");
                 document.getElementById('resultado-verificacion').innerHTML = '';
                 document.getElementById('input-buscar-codigo').value = '';
@@ -1796,7 +1914,7 @@
             }
 
             let codigo = 'TKT-' + Math.floor(100000 + Math.random() * 900000);
-            let fechaActualYMD = new Date().toISOString().split('T')[0];
+            let fechaActualYMD = obtenerFechaLocal();
             let fechaFormateada = new Date().toLocaleDateString();
             let horaActual = new Date().toLocaleTimeString();
             let totalVenta = carrito.reduce((acc, curr) => acc + curr.mont, 0);
@@ -1811,6 +1929,7 @@
                 total: totalVenta, 
                 estado: 'Pendiente' 
             });
+            guardarDatosPermanentes();
 
             let modalOld = document.getElementById('modal-ticket-prev');
             if (modalOld) modalOld.remove();
