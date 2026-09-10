@@ -6,11 +6,20 @@
     <title>Lotería - Triunfo - Sistema de Taquilla Multibanca</title>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --accent-color: #27ae60;
-            --danger-color: #c0392b;
-            --warning-color: #d35400;
-            --bg-color: #f4f6f7;
+            --primary-color: #1b2a41;
+            --primary-soft: #273d5b;
+            --accent-color: #25c281;
+            --accent-strong: #1ea76a;
+            --danger-color: #ef4d5d;
+            --warning-color: #ff9f43;
+            --gold-color: #f6c453;
+            --bg-color: #c7ccd4;
+            --bg-deep: #aeb7c2;
+            --surface: #f3f4f6;
+            --surface-soft: #e7ebf0;
+            --text: #1f2d3d;
+            --muted: #64748b;
+            --shadow: 0 18px 40px rgba(19, 36, 58, 0.16);
         }
         html, body {
             height: 100vh;
@@ -19,63 +28,163 @@
             overflow: hidden;
         }
         body {
+            position: relative;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: #333;
+            background: linear-gradient(135deg, #aeb7c2 0%, #c7ccd4 42%, #dfe5ec 100%);
+            color: var(--text);
             display: flex;
             flex-direction: column;
         }
         header {
-            background-color: var(--primary-color);
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-soft));
             color: white;
-            padding: 8px 15px;
+            padding: 10px 20px;
             text-align: center;
             flex-shrink: 0;
+            letter-spacing: 0.3px;
+            box-shadow: 0 6px 22px rgba(27, 42, 65, 0.18);
         }
         .reloj-header {
             font-size: 15px;
-            font-weight: bold;
-            margin-top: 2px;
-            color: #f1c40f;
+            font-weight: 700;
+            margin-top: 4px;
+            color: var(--gold-color);
         }
         .container {
-            max-width: 1100px;
-            width: 95%;
-            margin: 10px auto;
-            padding: 12px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            width: 96%;
+            margin: 18px auto;
+            padding: 18px;
+            background: rgba(247, 248, 250, 0.82);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
             display: flex;
-            flex-direction: column;
+            gap: 18px;
             flex-grow: 1;
             overflow: hidden;
             box-sizing: border-box;
         }
+        .system-animals {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.14;
+            filter: saturate(1.1);
+        }
+        .animal-float {
+            position: absolute;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(22px, 2vw, 42px);
+            transform: rotate(-10deg);
+            text-shadow: 0 6px 18px rgba(0,0,0,0.15);
+        }
+        .watermark {
+            position: fixed;
+            right: 18px;
+            bottom: 16px;
+            z-index: 1;
+            transform: rotate(-18deg);
+            font-weight: 800;
+            color: rgba(255, 214, 102, 0.55);
+            letter-spacing: 0.7px;
+            font-size: 12px;
+            border: 1px dashed rgba(255, 214, 102, 0.35);
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(15, 20, 28, 0.18);
+            backdrop-filter: blur(1px);
+            user-select: none;
+            text-shadow: 0 0 8px rgba(255, 214, 102, 0.08);
+        }
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #1d3557 0%, #0f1f35 100%);
+            border-radius: 22px;
+            padding: 18px 14px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.16);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 12px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+        }
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--gold-color), var(--warning-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 10px 20px rgba(246,196,83,0.35);
+        }
+        .brand-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: white;
+            line-height: 1.2;
+        }
+        .sidebar small {
+            color: rgba(255,255,255,0.75);
+            display: block;
+            margin-top: 2px;
+        }
         .nav-tabs {
             display: flex;
-            justify-content: space-around;
-            background: #e2e8f0;
-            padding: 6px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-            gap: 5px;
+            flex-direction: column;
+            background: rgba(255,255,255,0.06);
+            border-radius: 18px;
+            padding: 10px;
+            gap: 8px;
             flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,0.08);
         }
         .nav-tabs button {
-            background: none;
+            background: transparent;
             border: none;
-            font-weight: bold;
+            color: rgba(255,255,255,0.9);
+            font-weight: 700;
             cursor: pointer;
-            padding: 6px 10px;
-            border-radius: 4px;
-            transition: 0.3s;
+            padding: 12px 14px;
+            border-radius: 12px;
+            transition: 0.25s ease;
             font-size: 13px;
+            text-align: left;
+        }
+        .nav-tabs button:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(2px);
         }
         .nav-tabs button.active {
-            background: var(--primary-color);
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-strong));
             color: white;
+            box-shadow: 0 10px 20px rgba(37, 194, 129, 0.25);
+        }
+        .main-content {
+            flex: 1;
+            background: rgba(208, 214, 220, 0.92);
+            border: 1px solid rgba(255,255,255,0.75);
+            border-radius: 22px;
+            padding: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         .panel {
             display: none;
@@ -94,24 +203,27 @@
             margin-top: 5px;
         }
         .btn-slot-opcion {
-            padding: 6px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background: #fff;
+            padding: 7px 8px;
+            border: 1px solid #d9e2f1;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #ffffff, #f3f7ff);
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 700;
             text-align: center;
             font-size: 11px;
+            color: var(--text);
+            transition: 0.2s ease;
         }
         .btn-slot-opcion.activo {
-            background: var(--accent-color);
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-strong));
             color: white;
-            border-color: #219653;
+            border-color: transparent;
+            box-shadow: 0 8px 18px rgba(37, 194, 129, 0.22);
         }
         .btn-slot-opcion.proximo {
-            background: #f1c40f;
-            color: #333;
-            border-color: #d4ac0d;
+            background: linear-gradient(135deg, #ffd76a, #f5b942);
+            color: #312500;
+            border-color: transparent;
         }
         .btn-slot-opcion.cerrado {
             background: #e74c3c;
@@ -124,33 +236,45 @@
         }
         label {
             display: block;
-            font-weight: bold;
-            margin-bottom: 3px;
+            font-weight: 700;
+            margin-bottom: 5px;
             font-size: 13px;
+            color: var(--text);
         }
         select, input {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 10px 12px;
+            border: 1px solid #d7e0ef;
+            border-radius: 10px;
             box-sizing: border-box;
             font-size: 13px;
+            background: white;
+            color: var(--text);
+            box-shadow: inset 0 1px 3px rgba(15,31,53,0.04);
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: rgba(37, 194, 129, 0.7);
+            box-shadow: 0 0 0 3px rgba(37, 194, 129, 0.12);
         }
         button.btn-main {
-            background: var(--accent-color);
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-strong));
             color: white;
             border: none;
-            padding: 10px;
+            padding: 11px 14px;
             width: 100%;
             font-size: 14px;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 800;
             flex-shrink: 0;
             margin-top: 5px;
+            box-shadow: 0 12px 22px rgba(37, 194, 129, 0.2);
+            transition: transform 0.2s ease, opacity 0.2s ease;
         }
         button.btn-main:hover {
-            opacity: 0.9;
+            opacity: 0.96;
+            transform: translateY(-1px);
         }
         table {
             width: 100%;
@@ -158,41 +282,45 @@
             margin-top: 8px;
         }
         table, th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #e6ecf6;
         }
         th, td {
-            padding: 6px;
+            padding: 7px 6px;
             text-align: center;
             font-size: 12px;
         }
         th {
-            background-color: #f1f5f9;
+            background: linear-gradient(180deg, #f6f9ff, #edf3ff);
+            color: var(--primary-soft);
         }
         .alerta {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 8px;
-            border-radius: 5px;
+            background: linear-gradient(135deg, #fff0f1, #ffe0e5);
+            color: #8d2a35;
+            padding: 10px 12px;
+            border-radius: 10px;
             margin-bottom: 10px;
             display: none;
             font-size: 13px;
+            border: 1px solid rgba(239, 77, 93, 0.2);
         }
         .exito {
-            background: #d4edda;
-            color: #155724;
-            padding: 8px;
-            border-radius: 5px;
+            background: linear-gradient(135deg, #edfff8, #dffdf0);
+            color: #146c45;
+            padding: 10px 12px;
+            border-radius: 10px;
             margin-bottom: 10px;
             display: none;
             font-size: 13px;
+            border: 1px solid rgba(37, 194, 129, 0.2);
         }
-        .badge-pagado { color: var(--accent-color); font-weight: bold; }
+        .badge-pagado { color: var(--accent-strong); font-weight: bold; }
         .card-seccion {
-            background: #fdfefe;
-            border: 1px solid #e2e8f0;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 10px;
+            background: linear-gradient(180deg, #eef2f6, #e1e6ee);
+            border: 1px solid #d2d9e3;
+            padding: 12px;
+            border-radius: 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 8px 18px rgba(32, 46, 69, 0.04);
         }
         .grid-horarios {
             display: grid;
@@ -200,23 +328,286 @@
             gap: 8px;
             margin-bottom: 10px;
         }
+        .ventas-dashboard { display: flex; flex-direction: column; gap: 12px; }
+        .ventas-encabezado {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            color: white;
+            background: linear-gradient(135deg, #1d3557, #273d5b 60%, #315d75);
+            box-shadow: 0 10px 22px rgba(27,42,65,.16);
+        }
+        .ventas-encabezado h2 { margin: 0; font-size: 19px; }
+        .ventas-encabezado p { margin: 4px 0 0; color: rgba(255,255,255,.76); font-size: 12px; }
+        .ventas-animalitos { font-size: 25px; white-space: nowrap; filter: drop-shadow(0 3px 4px rgba(0,0,0,.3)); }
+        .ventas-bloque {
+            padding: 13px;
+            border: 1px solid rgba(27,42,65,.1);
+            border-radius: 14px;
+            background: linear-gradient(180deg, #ffffff, #eef2f6);
+            box-shadow: 0 8px 18px rgba(32,46,69,.06);
+        }
+        .ventas-titulo-bloque { display: flex; align-items: center; gap: 8px; margin: 0 0 9px; color: var(--primary-color); font-size: 12px; text-transform: uppercase; letter-spacing: .45px; }
+        .ventas-titulo-bloque span { font-size: 20px; }
+        .ventas-captura { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(120px, .8fr); gap: 10px; }
+        .ventas-captura .form-group { margin: 0; }
+        .ventas-carrito { overflow: hidden; padding-bottom: 9px; }
+        .ventas-tabla { max-height: 170px; overflow: auto; border: 1px solid #dce4ee; border-radius: 10px; background: white; }
+        .ventas-total {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: #e8edf3;
+        }
+        .ventas-total strong { color: var(--primary-color); font-size: 16px; }
+        .ventas-total .btn-main { width: auto; margin: 0; padding: 10px 16px; }
+        @media (max-width: 560px) {
+            .ventas-captura { grid-template-columns: 1fr; }
+            .ventas-total { align-items: stretch; flex-direction: column; }
+            .ventas-total .btn-main { width: 100%; }
+            .ventas-animalitos { font-size: 21px; }
+        }
         .texto-rojo-ganador {
             color: var(--danger-color);
             font-weight: bold;
         }
         .balance-positivo { color: var(--accent-color); font-weight: bold; }
         .balance-negativo { color: var(--danger-color); font-weight: bold; }
+        .balance-dashboard { display: flex; flex-direction: column; gap: 14px; }
+        .balance-encabezado {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            color: white;
+            background: linear-gradient(135deg, #1d3557, #273d5b);
+            box-shadow: 0 10px 20px rgba(27, 42, 65, .16);
+        }
+        .balance-encabezado h2 { margin: 0; font-size: 19px; }
+        .balance-encabezado p { margin: 4px 0 0; color: rgba(255,255,255,.75); font-size: 12px; }
+        .balance-animalitos { display: flex; align-items: center; gap: 5px; font-size: 24px; white-space: nowrap; }
+        .balance-animalitos span { filter: drop-shadow(0 3px 4px rgba(0,0,0,.25)); }
+        .balance-seccion-titulo { margin: 0 0 8px; color: var(--primary-color); font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+        .balance-filtros {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            padding: 14px;
+            border: 1px solid rgba(27, 42, 65, 0.12);
+            border-radius: 14px;
+            background: linear-gradient(135deg, #ffffff, #e9edf2);
+            box-shadow: 0 8px 18px rgba(27, 42, 65, 0.08);
+        }
+        .balance-filtro { margin: 0; }
+        .balance-filtro label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+        .balance-filtro input { width: 100%; box-sizing: border-box; }
+        .balance-resumen { min-height: 105px; }
+        .balance-resumen-vacio {
+            display: grid;
+            place-items: center;
+            min-height: 105px;
+            color: var(--muted);
+            border: 1px dashed rgba(27, 42, 65, 0.22);
+            border-radius: 14px;
+            background: rgba(255,255,255,.5);
+            font-size: 13px;
+        }
+        .balance-rango { margin: 0 0 10px; color: var(--muted); font-size: 12px; font-weight: 700; }
+        .balance-rango strong { color: var(--primary-color); }
+        .balance-cuadritos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+        .balance-cuadrito {
+            position: relative;
+            overflow: hidden;
+            min-height: 76px;
+            padding: 12px;
+            border: 1px solid rgba(27, 42, 65, .1);
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 7px 16px rgba(27, 42, 65, .08);
+        }
+        .balance-cuadrito-interactivo { cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; }
+        .balance-cuadrito-interactivo:hover { transform: translateY(-2px); box-shadow: 0 11px 22px rgba(27, 42, 65, .15); }
+        .balance-ayuda { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; }
+        .balance-cuadrito::after {
+            content: '';
+            position: absolute;
+            right: -18px;
+            bottom: -22px;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(37, 194, 129, .1);
+        }
+        .balance-cuadrito-premio::after { background: rgba(255, 159, 67, .13); }
+        .balance-cuadrito-caja { background: linear-gradient(135deg, #1d3557, #273d5b); color: white; }
+        .balance-cuadrito-ganancia { background: linear-gradient(135deg, #178458, #25c281); color: white; }
+        .balance-cuadrito-ganancia .balance-etiqueta { color: rgba(255,255,255,.8); }
+        .balance-cuadrito-ganancia .balance-positivo { color: white; }
+        .balance-cuadrito-ganancia .balance-negativo { color: #ffe0e3; }
+        .balance-etiqueta { display: block; color: var(--muted); font-size: 11px; font-weight: 800; }
+        .balance-icono { float: right; font-size: 22px; line-height: 1; }
+        .balance-valor { display: block; margin-top: 8px; font-size: 18px; font-weight: 900; }
+        @media (max-width: 560px) {
+            .balance-filtros, .balance-cuadritos { grid-template-columns: 1fr; }
+        }
+        /* LOGIN OVERLAY */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, rgba(255,191,73,0.35), transparent 20%), radial-gradient(circle at bottom right, rgba(39,101,197,0.3), transparent 20%), linear-gradient(135deg, #0e1d34 0%, #112a49 35%, #1f3d67 100%);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .login-card {
+            width: min(420px, 100%);
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 22px 60px rgba(4,10,20,0.45);
+            border-radius: 28px;
+            padding: 26px 26px 22px;
+            color: white;
+            text-align: center;
+        }
+        .animal-strip {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 28px;
+            filter: drop-shadow(0 10px 18px rgba(0,0,0,0.2));
+        }
+        .animal-strip span {
+            background: rgba(255,255,255,0.12);
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .login-logo {
+            width: 74px;
+            height: 74px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-color), var(--warning-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            color: #14263f;
+            box-shadow: 0 18px 30px rgba(246,196,83,0.35);
+        }
+        .login-card h2 {
+            margin: 0 0 8px;
+            font-size: clamp(2rem, 3vw, 2.7rem);
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            color: #ffe189;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.25);
+        }
+        .login-card p {
+            margin: 0 0 20px;
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: left;
+        }
+        .login-form label {
+            color: #edf5ff;
+            font-size: 13px;
+            margin-bottom: 0;
+        }
+        .login-form input {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.08);
+            color: white;
+            padding: 12px 14px;
+            box-sizing: border-box;
+        }
+        .login-form input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        .login-form button {
+            margin-top: 8px;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-size: 15px;
+            font-weight: 800;
+            color: #122740;
+            background: linear-gradient(135deg, #ffd76a, #f2b43c);
+            cursor: pointer;
+            box-shadow: 0 12px 26px rgba(242,180,60,0.3);
+        }
     </style>
 </head>
 <body>
+    <div class="system-animals" aria-hidden="true">
+        <span class="animal-float" style="top: 10%; left: 8%;">🐶</span>
+        <span class="animal-float" style="top: 16%; right: 9%;">🐼</span>
+        <span class="animal-float" style="top: 32%; left: 12%;">🦊</span>
+        <span class="animal-float" style="top: 42%; right: 12%;">🐯</span>
+        <span class="animal-float" style="top: 58%; left: 10%;">🐵</span>
+        <span class="animal-float" style="top: 70%; right: 14%;">🐮</span>
+        <span class="animal-float" style="top: 82%; left: 22%;">🐰</span>
+        <span class="animal-float" style="top: 86%; right: 24%;">🐸</span>
+    </div>
 
-<div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #111; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-    <h2 style="color: #ffcc00; text-align: center; font-size: 2.5em; text-shadow: 2px 2px 4px #000; margin-bottom: 20px;">Lotería - Triunfo</h2>
-    <form style="display: flex; flex-direction: column; align-items: center; width: 300px;">
-        <label style="color: #fff; margin-bottom: 5px;">Contraseña</label>
-        <input type="password" name="contraseña" required style="padding: 10px; width: 100%; margin-bottom: 15px; border-radius: 5px; border: none;">
-        <button type="submit" style="padding: 10px 20px; background-color: #ffcc00; border: none; font-weight: bold; border-radius: 5px; cursor: pointer;">Ingresar</button>
-    </form>
+    <div class="watermark">Agencia-Triunfo 04248202515</div>
+
+<div id="login-overlay">
+    <div class="login-card">
+        <div class="animal-strip" aria-hidden="true">
+            <span>🐶</span>
+            <span>🐼</span>
+            <span>🦊</span>
+            <span>🐯</span>
+            <span>🐵</span>
+        </div>
+        <div class="login-logo" aria-hidden="true">🎰</div>
+        <h2>Lotería - Triunfo</h2>
+        <p>Acceso seguro a la taquilla multibanca</p>
+        <form class="login-form">
+            <div>
+                <label for="pass-login">Contraseña</label>
+                <input id="pass-login" type="password" name="contraseña" required placeholder="Ingrese su contraseña" autocomplete="current-password">
+            </div>
+            <button type="submit">Ingresar</button>
+        </form>
+    </div>
 </div>
 
 <script>
@@ -228,6 +619,84 @@
             alert("Contraseña incorrecta");
         }
     });
+
+    function activarEnterEnCampo(selector, callback) {
+        const campo = document.querySelector(selector);
+        if (!campo) return;
+
+        campo.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                e.preventDefault();
+                callback();
+            }
+        });
+    }
+
+    function moverFocoSiguiente(campoActual) {
+        const controles = Array.from(document.querySelectorAll('input, select, textarea, button'))
+            .filter(control => !control.disabled && control.offsetParent !== null && control.type !== 'hidden');
+        const indiceActual = controles.indexOf(campoActual);
+        if (indiceActual === -1) return;
+
+        const siguiente = controles[indiceActual + 1];
+        if (siguiente) {
+            siguiente.focus();
+            if (typeof siguiente.select === 'function' && siguiente.tagName === 'INPUT') {
+                siguiente.select();
+            }
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key !== 'Enter' && e.keyCode !== 13) return;
+
+        const active = document.activeElement;
+        if (!active) return;
+
+        if (active.id === 'pass-login') {
+            e.preventDefault();
+            const form = document.querySelector('#login-overlay form');
+            if (form && form.contraseña.value === '1234') {
+                document.getElementById('login-overlay').style.display = 'none';
+            } else if (form) {
+                alert('Contraseña incorrecta');
+            }
+            return;
+        }
+
+        if (active.id === 'input-animal') {
+            e.preventDefault();
+            moverFocoSiguiente(active);
+            return;
+        }
+
+        if (active.id === 'input-monto') {
+            e.preventDefault();
+            if (document.getElementById('input-animal').value.trim() && active.value.trim()) {
+                agregarAlCarrito();
+            } else {
+                moverFocoSiguiente(active);
+            }
+            return;
+        }
+
+        if (active.id === 'input-buscar-codigo') {
+            e.preventDefault();
+            verificarTicketGanador();
+            return;
+        }
+
+        if (active.id === 'input-anular-codigo') {
+            e.preventDefault();
+            procesarAnulacionPorCodigo();
+            return;
+        }
+
+        if (active.matches('input, select, textarea')) {
+            e.preventDefault();
+            moverFocoSiguiente(active);
+        }
+    });
 </script>
 
 
@@ -236,208 +705,238 @@
         <div id="reloj-venezuela" class="reloj-header">00:00:00 PM</div>
     </header>
     <div class="container">
-        <!-- Navegación -->
-        <div class="nav-tabs">
-            <button onclick="showPanel('ventas')" id="tab-ventas" class="active">Ventas</button>
-            <button onclick="showPanel('resultados')" id="tab-resultados">Resultados</button>
-            <button onclick="showPanel('ganadores')" id="tab-ganadores">Pagar / Anular</button>
-            <button onclick="showPanel('reportes')" id="tab-reportes">Tickets Ganadores</button>
-            <button onclick="showPanel('balance')" id="tab-balance">Balance de Caja</button>
-            <button onclick="showPanel('configuracion')" id="tab-configuracion">Configuración</button>
-        </div>
-
-        <div id="alerta-sistema" class="alerta"></div>
-        <div id="exito-sistema" class="exito"></div>
-
-        <!-- PANEL DE VENTAS -->
-        <div id="panel-ventas" class="panel active">
-            <h2 style="margin-top:0; font-size:18px;">Registrar Jugada Multibanca Avanzada</h2>
-            
-            <div class="form-group">
-                <label>Seleccionar Agencias / Loterías:</label>
-                <div id="contenedor-loterias-venta" class="grid-multiselect">
-                    <div class="btn-slot-opcion activo" data-lot="Lotto Activo" onclick="toggleLoteriaVenta(this)">Lotto Activo</div>
-                    <div class="btn-slot-opcion" data-lot="La Granjita" onclick="toggleLoteriaVenta(this)">La Granjita</div>
-                    <div class="btn-slot-opcion" data-lot="Selva Plus" onclick="toggleLoteriaVenta(this)">Selva Plus</div>
-                    <div class="btn-slot-opcion" data-lot="Guácharo Activo" onclick="toggleLoteriaVenta(this)">Guácharo Activo</div>
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">🎰</div>
+                <div>
+                    <div class="brand-title">Lotería - Triunfo</div>
+                    <small>Taquilla Multibanca</small>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label>Seleccionar Horarios:</label>
-                <div id="contenedor-botones-horarios" class="grid-multiselect"></div>
-                <p id="texto-horario-seleccionado" style="font-size: 12px; font-weight: bold; color: var(--primary-color); margin: 3px 0 0 0;">Ningún horario seleccionado</p>
+            <div class="nav-tabs" aria-label="Menú principal">
+                <button onclick="showPanel('ventas')" id="tab-ventas" class="active">Ventas</button>
+                <button onclick="showPanel('resultados')" id="tab-resultados">Resultados</button>
+                <button onclick="showPanel('ganadores')" id="tab-ganadores">Pagar / Anular</button>
+                <button onclick="showPanel('reportes')" id="tab-reportes">Tickets Ganadores</button>
+                <button onclick="showPanel('balance')" id="tab-balance">Balance de Caja</button>
+                <button onclick="showPanel('configuracion')" id="tab-configuracion">Configuración</button>
             </div>
+        </aside>
 
-            <div style="display: flex; gap: 8px;">
-                <div class="form-group" style="flex: 2; margin-bottom: 5px;">
-                    <label>Número o Animalito:</label>
-                    <input type="text" id="input-animal" placeholder="Ej. 00, 5, Carnero" autocomplete="off">
-                </div>
-                <div class="form-group" style="flex: 1; margin-bottom: 5px;">
-                    <label>Monto (Bs):</label>
-                    <input type="number" id="input-monto" min="1" placeholder="Ej. 50">
-                </div>
-            </div>
+        <main class="main-content">
+            <div id="alerta-sistema" class="alerta"></div>
+            <div id="exito-sistema" class="exito"></div>
 
-            <button class="btn-main" onclick="agregarAlCarrito()">Agregar al Carrito (Multibanca)</button>
-
-            <h3 style="margin: 10px 0 5px 0; font-size:15px;">Carrito de Compras General</h3>
-            <div style="max-height: 140px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Lotería</th>
-                            <th>Horario</th>
-                            <th>Jugada</th>
-                            <th>Monto (Bs)</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-carrito"></tbody>
-                </table>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
-                <h3 style="margin:0; font-size:16px;">Total a Pagar: <span id="total-carrito">0.00</span> Bs</h3>
-                <button class="btn-main" style="background: var(--primary-color); width: auto; padding: 10px 20px; margin:0;" onclick="printAndSave()">🖨️ Imprimir y Guardar</button>
-            </div>
-        </div>
-        <!-- PANEL DE RESULTADOS -->
-        <div id="panel-resultados" class="panel">
-            <h2 style="margin-top:0; font-size:18px;">Cargar Resultados del Día</h2>
-            <div class="card-seccion">
-                <div style="display: flex; gap: 8px;">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Lotería:</label>
-                        <select id="res-loteria" onchange="renderizarCasillasResultados()">
-                            <option value="Lotto Activo">Lotto Activo</option>
-                            <option value="La Granjita">La Granjita</option>
-                            <option value="Selva Plus">Selva Plus</option>
-                            <option value="Guácharo Activo">Guácharo Activo</option>
-                        </select>
+            <!-- PANEL DE VENTAS -->
+            <div id="panel-ventas" class="panel active">
+                <div class="ventas-dashboard">
+                    <div class="ventas-encabezado">
+                        <div>
+                            <h2>Ventas - Lotería - Triunfo</h2>
+                            <p>Registre jugadas de forma rápida y ordenada</p>
+                        </div>
+                        <div class="ventas-animalitos" aria-label="Animalitos">🐯 🦁 🐘 🐒</div>
                     </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Fecha:</label>
-                        <input type="date" id="res-fecha" onchange="renderizarCasillasResultados()">
+
+                    <div class="ventas-bloque">
+                        <h3 class="ventas-titulo-bloque"><span>🎯</span> Seleccione la lotería</h3>
+                        <div id="contenedor-loterias-venta" class="grid-multiselect">
+                            <div class="btn-slot-opcion activo" data-lot="Lotto Activo" onclick="toggleLoteriaVenta(this)">Lotto Activo</div>
+                            <div class="btn-slot-opcion" data-lot="La Granjita" onclick="toggleLoteriaVenta(this)">La Granjita</div>
+                            <div class="btn-slot-opcion" data-lot="Selva Plus" onclick="toggleLoteriaVenta(this)">Selva Plus</div>
+                            <div class="btn-slot-opcion" data-lot="Guácharo Activo" onclick="toggleLoteriaVenta(this)">Guácharo Activo</div>
+                        </div>
                     </div>
-                </div>
 
-                <h3 style="margin: 5px 0; font-size:14px;">Horarios de la Lotería Seleccionada</h3>
-                <div id="grid-horarios-resultados" class="grid-horarios" style="max-height: 180px; overflow-y: auto;"></div>
-                <button class="btn-main" onclick="guardarResultadosHorarios()">Guardar Resultados del Día</button>
-            </div>
-        </div>
+                    <div class="ventas-bloque">
+                        <h3 class="ventas-titulo-bloque"><span>🕒</span> Seleccione el horario</h3>
+                        <div id="contenedor-botones-horarios" class="grid-multiselect"></div>
+                        <p id="texto-horario-seleccionado" style="font-size:12px; font-weight:bold; color:var(--primary-color); margin:8px 0 0;">Ningún horario seleccionado</p>
+                    </div>
 
-        <!-- PANEL DE PAGAR / ANULAR CON INPUTS NUMÉRICOS -->
-        <div id="panel-ganadores" class="panel">
-            <h2 style="margin-top:0; font-size:18px;">Módulo de Pagos y Anulaciones</h2>
-            <div class="card-seccion">
-                <h3 style="margin-top:0; font-size:14px;">Verificar / Pagar Ticket Ganador</h3>
-                <div class="form-group">
-                    <label>Ingrese solo los números del Ticket (Ej. 987654):</label>
-                    <div style="display: flex; align-items: center; border: 1px solid #ccc; border-radius: 5px; background: #fff; overflow: hidden;">
-                        <span style="background: #e2e8f0; padding: 8px 10px; font-weight: bold; border-right: 1px solid #ccc; color: #555; font-size: 13px;">TKT-</span>
-                        <input type="number" id="input-buscar-codigo" placeholder="987654" style="border: none; outline: none; padding: 8px; width: 100%;">
+                    <div class="ventas-bloque">
+                        <h3 class="ventas-titulo-bloque"><span>📝</span> Datos de la jugada</h3>
+                        <div class="ventas-captura">
+                            <div class="form-group">
+                                <label>Número o Animalito:</label>
+                                <input type="text" id="input-animal" placeholder="Ej. 00, 5, Carnero" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label>Monto (Bs):</label>
+                                <input type="number" id="input-monto" min="1" placeholder="Ej. 50">
+                            </div>
+                        </div>
+                        <button class="btn-main" onclick="agregarAlCarrito()">➕ Agregar jugada</button>
+                    </div>
+
+                    <div class="ventas-bloque ventas-carrito">
+                        <h3 class="ventas-titulo-bloque"><span>🧾</span> Carrito de compra</h3>
+                        <div class="ventas-tabla">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Lotería</th>
+                                        <th>Horario</th>
+                                        <th>Jugada</th>
+                                        <th>Monto (Bs)</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-carrito"></tbody>
+                            </table>
+                        </div>
+                        <div class="ventas-total">
+                            <strong>Total a pagar: <span id="total-carrito">0.00</span> Bs</strong>
+                            <button class="btn-main" style="background:var(--primary-color);" onclick="printAndSave()">🖨️ Imprimir y Guardar</button>
+                        </div>
                     </div>
                 </div>
-                <button class="btn-main" style="background: var(--warning-color);" onclick="verificarTicketGanador()">Verificar Premio Consolidado</button>
-                <div id="resultado-verificacion" style="margin-top: 10px;"></div>
+            </div>
+            <!-- PANEL DE RESULTADOS -->
+            <div id="panel-resultados" class="panel">
+                <h2 style="margin-top:0; font-size:18px;">Cargar Resultados del Día</h2>
+                <div class="card-seccion">
+                    <div style="display: flex; gap: 8px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Lotería:</label>
+                            <select id="res-loteria" onchange="renderizarCasillasResultados()">
+                                <option value="Lotto Activo">Lotto Activo</option>
+                                <option value="La Granjita">La Granjita</option>
+                                <option value="Selva Plus">Selva Plus</option>
+                                <option value="Guácharo Activo">Guácharo Activo</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Fecha:</label>
+                            <input type="date" id="res-fecha" onchange="renderizarCasillasResultados()">
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 5px 0; font-size:14px;">Horarios de la Lotería Seleccionada</h3>
+                    <div id="grid-horarios-resultados" class="grid-horarios" style="max-height: 180px; overflow-y: auto;"></div>
+                    <button class="btn-main" onclick="guardarResultadosHorarios()">Guardar Resultados del Día</button>
+                </div>
             </div>
 
-            <div class="card-seccion" style="border-color: #f5b7b1;">
-                <h3 style="color: var(--danger-color); margin-top:0; font-size:14px;">Anular Ticket (Límite: 5 minutos)</h3>
-                <div class="form-group">
-                    <label>Ingrese solo los números del Ticket a Anular:</label>
-                    <div style="display: flex; align-items: center; border: 1px solid #ccc; border-radius: 5px; background: #fff; overflow: hidden;">
-                        <span style="background: #e2e8f0; padding: 8px 10px; font-weight: bold; border-right: 1px solid #ccc; color: #555; font-size: 13px;">TKT-</span>
-                        <input type="number" id="input-anular-codigo" placeholder="123456" style="border: none; outline: none; padding: 8px; width: 100%;">
+            <!-- PANEL DE PAGAR / ANULAR CON INPUTS NUMÉRICOS -->
+            <div id="panel-ganadores" class="panel">
+                <h2 style="margin-top:0; font-size:18px;">Módulo de Pagos y Anulaciones</h2>
+                <div class="card-seccion">
+                    <h3 style="margin-top:0; font-size:14px;">Verificar / Pagar Ticket Ganador</h3>
+                    <div class="form-group">
+                        <label>Ingrese solo los números del Ticket (Ej. 987654):</label>
+                        <div style="display: flex; align-items: center; border: 1px solid #ccc; border-radius: 5px; background: #fff; overflow: hidden;">
+                            <span style="background: #e2e8f0; padding: 8px 10px; font-weight: bold; border-right: 1px solid #ccc; color: #555; font-size: 13px;">TKT-</span>
+                            <input type="number" id="input-buscar-codigo" placeholder="987654" style="border: none; outline: none; padding: 8px; width: 100%;">
+                        </div>
                     </div>
+                    <button class="btn-main" style="background: var(--warning-color);" onclick="verificarTicketGanador()">Verificar Premio Consolidado</button>
+                    <div id="resultado-verificacion" style="margin-top: 10px;"></div>
                 </div>
-                <button class="btn-main" style="background: var(--danger-color);" onclick="procesarAnulacionPorCodigo()">Anular Ticket del Sistema</button>
-            </div>
-        </div>
-        <!-- PANEL DE TICKETS GANADORES -->
-        <div id="panel-reportes" class="panel">
-            <h2 style="margin-top:0; font-size:18px;">Historial de Tickets Ganadores</h2>
-            <div class="card-seccion" style="padding: 8px;">
-                <div class="form-group" style="margin-bottom:0;">
-                    <label>Seleccionar Fecha a Consultar:</label>
-                    <input type="date" id="filtro-fecha-ganadores" onchange="filtrarTicketsGanadoresFecha()">
-                </div>
-            </div>
-            <div style="max-height: 250px; overflow-y: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Fecha / Hora</th>
-                            <th>Total (Bs)</th>
-                            <th>Premio (Bs)</th>
-                            <th>Estado</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-tickets-ganadores">
-                        <tr><td colspan="6" style="color: #888;">Seleccione una fecha.</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
 
-        <!-- PANEL DE BALANCE DE CAJA -->
-        <div id="panel-balance" class="panel">
-            <h2 style="margin-top:0; font-size:18px;">Balance de Caja y Ganancia Real</h2>
-            <div class="card-seccion">
-                <div style="display: flex; gap: 8px;">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Desde:</label>
-                        <input type="date" id="filtro-balance-inicio" onchange="consultarBalanceRango()">
+                <div class="card-seccion" style="border-color: #f5b7b1;">
+                    <h3 style="color: var(--danger-color); margin-top:0; font-size:14px;">Anular Ticket (Límite: 5 minutos)</h3>
+                    <div class="form-group">
+                        <label>Ingrese solo los números del Ticket a Anular:</label>
+                        <div style="display: flex; align-items: center; border: 1px solid #ccc; border-radius: 5px; background: #fff; overflow: hidden;">
+                            <span style="background: #e2e8f0; padding: 8px 10px; font-weight: bold; border-right: 1px solid #ccc; color: #555; font-size: 13px;">TKT-</span>
+                            <input type="number" id="input-anular-codigo" placeholder="123456" style="border: none; outline: none; padding: 8px; width: 100%;">
+                        </div>
                     </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Hasta:</label>
-                        <input type="date" id="filtro-balance-fin" onchange="consultarBalanceRango()">
-                    </div>
-                </div>
-                <div id="resultado-balance-fecha" style="background: #eef2f7; padding: 10px; border-radius: 6px; margin-top: 8px; font-size: 13px;">
-                    <p style="margin:0;">Seleccione un rango de fechas.</p>
+                    <button class="btn-main" style="background: var(--danger-color);" onclick="procesarAnulacionPorCodigo()">Anular Ticket del Sistema</button>
                 </div>
             </div>
-        </div>
-
-        <!-- PANEL DE CONFIGURACIÓN -->
-        <div id="panel-configuracion" class="panel">
-            <h2 style="margin-top:0; font-size:18px;">Configuración de Límites por Animales</h2>
-            <div class="card-seccion">
-                <div style="display: flex; gap: 8px;">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Lotería:</label>
-                        <select id="config-loteria" onchange="cargarConfiguracionLimites()">
-                            <option value="Lotto Activo">Lotto Activo (0-36)</option>
-                            <option value="La Granjita">La Granjita (0-36)</option>
-                            <option value="Selva Plus">Selva Plus (0-36)</option>
-                            <option value="Guácharo Activo">Guácharo Activo (0-75)</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>🔍 Buscar Animal:</label>
-                        <input type="text" id="config-busqueda" placeholder="Número o nombre..." oninput="filtrarMatrizLimites()">
+            <!-- PANEL DE TICKETS GANADORES -->
+            <div id="panel-reportes" class="panel">
+                <h2 style="margin-top:0; font-size:18px;">Historial de Tickets Ganadores</h2>
+                <div class="card-seccion" style="padding: 8px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Seleccionar Fecha a Consultar:</label>
+                        <input type="date" id="filtro-fecha-ganadores" onchange="filtrarTicketsGanadoresFecha()">
                     </div>
                 </div>
-                <div style="max-height: 180px; overflow-y: auto; border: 1px solid #ccc; border-radius: 5px;">
+                <div style="max-height: 250px; overflow-y: auto;">
                     <table>
                         <thead>
                             <tr>
-                                <th>Animal / Número</th>
-                                <th>Límite (Bs)</th>
+                                <th>Código</th>
+                                <th>Fecha / Hora</th>
+                                <th>Total (Bs)</th>
+                                <th>Premio (Bs)</th>
+                                <th>Estado</th>
                                 <th>Acción</th>
                             </tr>
                         </thead>
-                        <tbody id="tabla-matriz-limites"></tbody>
+                        <tbody id="tabla-tickets-ganadores">
+                            <tr><td colspan="6" style="color: #888;">Seleccione una fecha.</td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
-        </div>
+
+            <!-- PANEL DE BALANCE DE CAJA -->
+            <div id="panel-balance" class="panel">
+                <div class="balance-dashboard">
+                    <div class="balance-encabezado">
+                        <div>
+                            <h2>Balance de Caja</h2>
+                            <p>Resumen financiero de la agencia</p>
+                        </div>
+                        <div class="balance-animalitos" aria-label="Animalitos">🐯 🦁 🐘 🐒</div>
+                    </div>
+                    <div class="balance-filtros">
+                        <div style="grid-column:1 / -1;">
+                            <h3 class="balance-seccion-titulo">Periodo de consulta</h3>
+                        </div>
+                        <div class="balance-filtro">
+                            <label for="filtro-balance-inicio">Desde</label>
+                            <input type="date" id="filtro-balance-inicio" onchange="consultarBalanceRango()">
+                        </div>
+                        <div class="balance-filtro">
+                            <label for="filtro-balance-fin">Hasta</label>
+                            <input type="date" id="filtro-balance-fin" onchange="consultarBalanceRango()">
+                        </div>
+                    </div>
+                    <div id="resultado-balance-fecha" class="balance-resumen">
+                        <div class="balance-resumen-vacio">Seleccione un rango de fechas para ver el balance.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL DE CONFIGURACIÓN -->
+            <div id="panel-configuracion" class="panel">
+                <h2 style="margin-top:0; font-size:18px;">Configuración de Límites por Animales</h2>
+                <div class="card-seccion">
+                    <div style="display: flex; gap: 8px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Lotería:</label>
+                            <select id="config-loteria" onchange="cargarConfiguracionLimites()">
+                                <option value="Lotto Activo">Lotto Activo (0-36)</option>
+                                <option value="La Granjita">La Granjita (0-36)</option>
+                                <option value="Selva Plus">Selva Plus (0-36)</option>
+                                <option value="Guácharo Activo">Guácharo Activo (0-75)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>🔍 Buscar Animal:</label>
+                            <input type="text" id="config-busqueda" placeholder="Número o nombre..." oninput="filtrarMatrizLimites()">
+                        </div>
+                    </div>
+                    <div style="max-height: 180px; overflow-y: auto; border: 1px solid #ccc; border-radius: 5px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Animal / Número</th>
+                                    <th>Límite (Bs)</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-matriz-limites"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
     <script>
         const horariosLoterias = {
@@ -478,6 +977,7 @@
         let carrito = [];
         let baseDatos = []; 
         let resultadosGlobales = {}; 
+        let historialGuardadoResultados = {};
         let agenciasSeleccionadasVenta = ["Lotto Activo"];
         let horariosSeleccionadosVenta = [];
         setInterval(() => {
@@ -528,10 +1028,11 @@
         }
 
         function parsearHoraSorteo(horarioStr) {
-            let [hora, minutoPeriodo] = horarioStr.split(':');
-            let [minuto, periodo] = minutoPeriodo.split(' ');
+            let [hora, minutoPeriodo] = horarioStr.trim().split(':');
+            let [minuto, periodo] = minutoPeriodo.trim().split(/\s+/);
             let h = parseInt(hora);
             let m = parseInt(minuto);
+            periodo = periodo.toUpperCase();
             if (periodo === 'PM' && h !== 12) h += 12;
             if (periodo === 'AM' && h === 12) h = 0;
             return { h, m };
@@ -741,6 +1242,60 @@
             let valNum = parseFloat(valor);
             if (!isNaN(valNum) && valNum >= 0) limitesLoterias[loteria][idAnimal] = valNum;
         }
+
+        function obtenerFechaLocal() {
+            let partes = new Intl.DateTimeFormat('en-CA', {
+                timeZone: 'America/Caracas',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).formatToParts(new Date());
+            let valores = Object.fromEntries(partes.map(parte => [parte.type, parte.value]));
+            return `${valores.year}-${valores.month}-${valores.day}`;
+        }
+
+        function obtenerMinutosVenezuela() {
+            let partes = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'America/Caracas',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }).formatToParts(new Date());
+            let valores = Object.fromEntries(partes.map(parte => [parte.type, parte.value]));
+            let hora = parseInt(valores.hour, 10);
+            if (hora === 24) hora = 0;
+            return hora * 60 + parseInt(valores.minute, 10);
+        }
+
+        function horarioDisponibleParaResultado(fechaStr, horario) {
+            if (!fechaStr) return false;
+
+            let fechaHoy = obtenerFechaLocal();
+            if (fechaStr < fechaHoy) return true;
+            if (fechaStr > fechaHoy) return false;
+
+            let horaSorteo = parsearHoraSorteo(horario);
+            let minutosActuales = obtenerMinutosVenezuela();
+            let minutosSorteo = horaSorteo.h * 60 + horaSorteo.m;
+            return minutosActuales >= minutosSorteo;
+        }
+
+        function autorizarEdicionResultado(input) {
+            let valorOriginal = input.getAttribute('data-valor-original') || '';
+            if (!valorOriginal || input.dataset.autorizado === 'true') return;
+
+            let clave = prompt('Este resultado ya fue registrado. Ingrese la contraseña de verificación:');
+            if (clave !== '1234') {
+                input.value = valorOriginal;
+                input.blur();
+                mostrarAlerta('⚠️ Contraseña incorrecta. No se puede cambiar el resultado.');
+                return;
+            }
+
+            input.dataset.autorizado = 'true';
+            input.removeAttribute('data-valor-original');
+        }
+
         function renderizarCasillasResultados() {
             let loteria = document.getElementById('res-loteria').value;
             let contenedor = document.getElementById('grid-horarios-resultados');
@@ -750,16 +1305,57 @@
 
             horarios.forEach(h => {
                 let valExistente = (resultadosGlobales[fechaStr] && resultadosGlobales[fechaStr][loteria] && resultadosGlobales[fechaStr][loteria][h]) ? resultadosGlobales[fechaStr][loteria][h] : '';
+                let disponible = horarioDisponibleParaResultado(fechaStr, h);
                 contenedor.innerHTML += `
                     <div class="form-group" style="margin-bottom:6px;">
-                        <label>${h}</label>
-                        <input type="text" class="input-resultado-horario" data-horario="${h}" value="${valExistente}" placeholder="Ej. 00">
+                        <label>${h}${disponible ? '' : ' - Aún no disponible'}</label>
+                        <input type="text" class="input-resultado-horario" data-horario="${h}" data-valor-original="${valExistente}" value="${valExistente}" placeholder="Ej. 00" ${disponible ? '' : 'disabled'}>
                     </div>
                 `;
             });
         }
 
-        function guardarResultadosHorarios() {
+        function mostrarVerificacionResultado(callback) {
+            let modalAnterior = document.getElementById('modal-verificacion-resultado');
+            if (modalAnterior) modalAnterior.remove();
+
+            let modal = document.createElement('div');
+            modal.id = 'modal-verificacion-resultado';
+            modal.style.cssText = 'position:fixed; inset:0; z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(8,18,32,.72);';
+            modal.innerHTML = `
+                <form style="width:min(360px,100%); box-sizing:border-box; padding:22px; border-radius:16px; background:#fff; box-shadow:0 18px 45px rgba(0,0,0,.3); text-align:center;">
+                    <div style="font-size:30px; margin-bottom:6px;">🔐</div>
+                    <h3 style="margin:0; color:var(--primary-color);">Verificar cambio</h3>
+                    <p style="margin:8px 0 14px; color:var(--muted); font-size:13px;">Este resultado ya fue guardado. Escriba la contraseña para continuar.</p>
+                    <input id="clave-verificacion-resultado" type="password" placeholder="Contraseña" autocomplete="off" style="width:100%; box-sizing:border-box; padding:11px; text-align:center; font-size:16px;">
+                    <div id="error-clave-resultado" style="min-height:18px; margin-top:7px; color:var(--danger-color); font-size:12px;"></div>
+                    <div style="display:flex; gap:8px; margin-top:8px;">
+                        <button type="button" id="cancelar-clave-resultado" style="flex:1; padding:10px; border:0; border-radius:8px; background:#dfe4ea; color:var(--text); cursor:pointer;">Cancelar</button>
+                        <button type="submit" style="flex:1; padding:10px; border:0; border-radius:8px; background:var(--accent-color); color:#fff; font-weight:700; cursor:pointer;">Verificar</button>
+                    </div>
+                </form>
+            `;
+            document.body.appendChild(modal);
+
+            let formulario = modal.querySelector('form');
+            let campoClave = modal.querySelector('#clave-verificacion-resultado');
+            formulario.addEventListener('submit', function(event) {
+                event.preventDefault();
+                if (campoClave.value === '1234') {
+                    modal.remove();
+                    callback();
+                } else {
+                    modal.querySelector('#error-clave-resultado').textContent = 'Contraseña incorrecta.';
+                    campoClave.select();
+                }
+            });
+            modal.querySelector('#cancelar-clave-resultado').addEventListener('click', function() {
+                modal.remove();
+            });
+            campoClave.focus();
+        }
+
+        function guardarResultadosHorarios(autorizado = false) {
             let loteria = document.getElementById('res-loteria').value;
             let fechaStr = document.getElementById('res-fecha').value;
             if (!fechaStr) {
@@ -767,18 +1363,41 @@
                 return;
             }
 
+            let claveGuardado = `${fechaStr}|${loteria}`;
+            let resultadosRegistrados = resultadosGlobales[fechaStr] && resultadosGlobales[fechaStr][loteria]
+                ? resultadosGlobales[fechaStr][loteria]
+                : {};
+            let yaTieneResultados = historialGuardadoResultados[claveGuardado] || Object.keys(resultadosRegistrados).length > 0;
+
+            if (yaTieneResultados && !autorizado) {
+                mostrarVerificacionResultado(function() {
+                    guardarResultadosHorarios(true);
+                });
+                return;
+            }
+
             let inputsHorarios = document.querySelectorAll('.input-resultado-horario');
-            if (!resultadosGlobales[fechaStr]) resultadosGlobales[fechaStr] = {};
-            if (!resultadosGlobales[fechaStr][loteria]) resultadosGlobales[fechaStr][loteria] = {};
+            let cambios = [];
 
             inputsHorarios.forEach(input => {
                 let horario = input.getAttribute('data-horario');
                 let valorRes = input.value.trim().toUpperCase();
-                if (valorRes) {
-                    resultadosGlobales[fechaStr][loteria][horario] = valorRes;
+
+                if (valorRes && horarioDisponibleParaResultado(fechaStr, horario)) {
+                    cambios.push({ horario, valorRes });
                 }
             });
 
+            if (!resultadosGlobales[fechaStr]) resultadosGlobales[fechaStr] = {};
+            if (!resultadosGlobales[fechaStr][loteria]) resultadosGlobales[fechaStr][loteria] = {};
+
+            cambios.forEach(cambio => {
+                resultadosGlobales[fechaStr][loteria][cambio.horario] = cambio.valorRes;
+            });
+
+            if (cambios.length > 0) historialGuardadoResultados[claveGuardado] = true;
+
+            renderizarCasillasResultados();
             mostrarExito("✅ Resultados guardados correctamente para " + loteria);
         }
 
@@ -823,6 +1442,24 @@
             return item.mont * multiplicador;
         }
 
+        function normalizarClaveResultado(loteria, resultado) {
+            let valor = String(resultado || '').trim().toUpperCase();
+            if (!valor) return '';
+
+            if (loteria === 'Guácharo Activo') {
+                let numeroGuacharo = parseInt(valor, 10);
+                return Number.isNaN(numeroGuacharo) ? valor : String(numeroGuacharo);
+            }
+
+            let animal = animalesLotto36.find(item =>
+                item.id.toUpperCase() === valor || item.nombre.toUpperCase() === valor
+            );
+            if (animal) return animal.id;
+
+            if (/^0\d$/.test(valor)) return valor.substring(1);
+            return valor;
+        }
+
         function evaluarTicketConsolidado(ticket) {
             let resultadosFecha = resultadosGlobales[ticket.fechaOriginal];
             let aciertos = [];
@@ -832,7 +1469,9 @@
 
             ticket.items.forEach(item => {
                 let ganadorHorario = resultadosFecha[item.lot] ? resultadosFecha[item.lot][item.horario] : null;
-                if (ganadorHorario && ganadorHorario.toUpperCase() === item.animalClave.toUpperCase()) {
+                let claveGanadora = normalizarClaveResultado(item.lot, ganadorHorario);
+                let claveJugada = normalizarClaveResultado(item.lot, item.animalClave);
+                if (claveGanadora && claveGanadora === claveJugada) {
                     let premioIndividual = calcularPremioItem(item);
                     aciertos.push({ ...item, premio: premioIndividual });
                     totalPremio += premioIndividual;
@@ -982,6 +1621,109 @@
             document.body.appendChild(modal);
         }
 
+        function verTicketsVendidosBalance(fechaInicio, fechaFin) {
+            let tickets = baseDatos.filter(ticket =>
+                ticket.fechaOriginal >= fechaInicio &&
+                ticket.fechaOriginal <= fechaFin &&
+                ticket.estado !== 'Anulado'
+            );
+
+            let filas = tickets.length > 0
+                ? tickets.map(ticket => `
+                    <tr>
+                        <td><b>${ticket.codigo}</b></td>
+                        <td>${ticket.fechaOriginal}<br>${ticket.horaEmision}</td>
+                        <td>${ticket.items.length}</td>
+                        <td><b>${ticket.total.toFixed(2)} Bs</b></td>
+                        <td><button onclick="verDetalleJugadaTicket('${ticket.codigo}')" class="btn-main" style="width:auto; margin:0; padding:7px 10px; font-size:11px;">Ver jugada</button></td>
+                    </tr>
+                `).join('')
+                : '<tr><td colspan="5" style="padding:18px; color:#64748b;">No hay tickets vendidos en este periodo.</td></tr>';
+
+            let modalAnterior = document.getElementById('modal-tickets-vendidos');
+            if (modalAnterior) modalAnterior.remove();
+
+            let modal = document.createElement('div');
+            modal.id = 'modal-tickets-vendidos';
+            modal.innerHTML = `
+                <style>
+                    #modal-tickets-vendidos { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; padding:18px; background:rgba(8,18,32,.72); }
+                    .tickets-vendidos-box { width:min(720px,100%); max-height:90vh; overflow:auto; padding:18px; box-sizing:border-box; border-radius:16px; background:#f5f7fa; box-shadow:0 18px 45px rgba(0,0,0,.3); }
+                    .tickets-vendidos-cabecera { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; }
+                    .tickets-vendidos-cabecera h3 { margin:0; color:var(--primary-color); }
+                    .tickets-vendidos-tabla { overflow:auto; border:1px solid #dce4ee; border-radius:10px; background:white; }
+                    .tickets-vendidos-tabla table { margin:0; min-width:590px; }
+                </style>
+                <div class="tickets-vendidos-box">
+                    <div class="tickets-vendidos-cabecera">
+                        <div>
+                            <h3>Tickets vendidos</h3>
+                            <small>${fechaInicio} al ${fechaFin}</small>
+                        </div>
+                        <button type="button" onclick="document.getElementById('modal-tickets-vendidos').remove()" style="border:0; background:var(--danger-color); color:white; border-radius:8px; padding:8px 12px; cursor:pointer;">Cerrar</button>
+                    </div>
+                    <div class="tickets-vendidos-tabla">
+                        <table>
+                            <thead><tr><th>Ticket</th><th>Fecha / Hora</th><th>Jugadas</th><th>Total</th><th>Detalle</th></tr></thead>
+                            <tbody>${filas}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function verPremiosBalance(tipo, fechaInicio, fechaFin) {
+            let ticketsPremiados = baseDatos
+                .filter(ticket => ticket.fechaOriginal >= fechaInicio && ticket.fechaOriginal <= fechaFin && ticket.estado !== 'Anulado')
+                .map(ticket => ({ ticket, premio: evaluarTicketConsolidado(ticket).totalPremio }))
+                .filter(item => item.premio > 0 && (tipo === 'pagados' ? item.ticket.estado === 'Pagado' : item.ticket.estado !== 'Pagado'));
+
+            let filas = ticketsPremiados.length > 0
+                ? ticketsPremiados.map(({ ticket, premio }) => `
+                    <tr>
+                        <td><b>${ticket.codigo}</b></td>
+                        <td>${ticket.fechaOriginal}<br>${ticket.horaEmision}</td>
+                        <td><b>${premio.toFixed(2)} Bs</b></td>
+                        <td>${ticket.estado}</td>
+                        <td><button onclick="verDetalleJugadaTicket('${ticket.codigo}')" class="btn-main" style="width:auto; margin:0; padding:7px 10px; font-size:11px;">Ver jugada</button></td>
+                    </tr>
+                `).join('')
+                : `<tr><td colspan="5" style="padding:18px; color:#64748b;">No hay premios ${tipo === 'pagados' ? 'pagados' : 'pendientes'} en este periodo.</td></tr>`;
+
+            let modalAnterior = document.getElementById('modal-premios-balance');
+            if (modalAnterior) modalAnterior.remove();
+
+            let modal = document.createElement('div');
+            modal.id = 'modal-premios-balance';
+            modal.innerHTML = `
+                <style>
+                    #modal-premios-balance { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; padding:18px; background:rgba(8,18,32,.72); }
+                    .premios-balance-box { width:min(720px,100%); max-height:90vh; overflow:auto; padding:18px; box-sizing:border-box; border-radius:16px; background:#f5f7fa; box-shadow:0 18px 45px rgba(0,0,0,.3); }
+                    .premios-balance-cabecera { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; }
+                    .premios-balance-cabecera h3 { margin:0; color:var(--primary-color); }
+                    .premios-balance-tabla { overflow:auto; border:1px solid #dce4ee; border-radius:10px; background:white; }
+                    .premios-balance-tabla table { margin:0; min-width:590px; }
+                </style>
+                <div class="premios-balance-box">
+                    <div class="premios-balance-cabecera">
+                        <div>
+                            <h3>Premios ${tipo === 'pagados' ? 'pagados' : 'pendientes'}</h3>
+                            <small>${fechaInicio} al ${fechaFin}</small>
+                        </div>
+                        <button type="button" onclick="document.getElementById('modal-premios-balance').remove()" style="border:0; background:var(--danger-color); color:white; border-radius:8px; padding:8px 12px; cursor:pointer;">Cerrar</button>
+                    </div>
+                    <div class="premios-balance-tabla">
+                        <table>
+                            <thead><tr><th>Ticket</th><th>Fecha / Hora</th><th>Premio</th><th>Estado</th><th>Detalle</th></tr></thead>
+                            <tbody>${filas}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
         function consultarBalanceRango() {
             let fechaInicio = document.getElementById('filtro-balance-inicio').value;
             let fechaFin = document.getElementById('filtro-balance-fin').value;
@@ -1012,13 +1754,38 @@
             let claseGanancia = gananciaRealBanca >= 0 ? 'balance-positivo' : 'balance-negativo';
 
             contenedor.innerHTML = `
-                <h3 style="margin:0 0 5px 0; font-size:14px;">Resumen (${fechaInicio} al ${fechaFin})</h3>
-                <p style="margin:2px 0;"><b>Total Ventas:</b> ${totalVentas.toFixed(2)} Bs</p>
-                <p style="margin:2px 0;"><b>Premios Pagados:</b> ${premiosPagadosEfectivo.toFixed(2)} Bs</p>
-                <p style="margin:2px 0;"><b>Premios Pendientes:</b> ${premiosPendientesPorPagar.toFixed(2)} Bs</p>
-                <hr style="border: 1px solid #ccc; margin:5px 0;">
-                <p style="margin:2px 0;"><b>1. Dinero en Caja (Efectivo):</b> ${dineroEnCaja.toFixed(2)} Bs</p>
-                <p style="margin:2px 0;"><b>2. Ganancia Real Banca:</b> <span class="${claseGanancia}">${gananciaRealBanca.toFixed(2)} Bs</span></p>
+                <p class="balance-rango"><strong>PERIODO:</strong> ${fechaInicio} AL ${fechaFin}</p>
+                <h3 class="balance-seccion-titulo">Resumen de movimientos</h3>
+                <div class="balance-cuadritos">
+                    <div class="balance-cuadrito balance-cuadrito-interactivo" onclick="verTicketsVendidosBalance('${fechaInicio}', '${fechaFin}')" title="Ver todos los tickets vendidos">
+                        <span class="balance-icono">🎟️</span>
+                        <span class="balance-etiqueta">Total de ventas</span>
+                        <strong class="balance-valor">${totalVentas.toFixed(2)} Bs</strong>
+                        <small class="balance-ayuda">Clic para ver tickets vendidos</small>
+                    </div>
+                    <div class="balance-cuadrito balance-cuadrito-premio balance-cuadrito-interactivo" onclick="verPremiosBalance('pagados', '${fechaInicio}', '${fechaFin}')" title="Ver premios pagados">
+                        <span class="balance-icono">🏆</span>
+                        <span class="balance-etiqueta">Premios pagados</span>
+                        <strong class="balance-valor">${premiosPagadosEfectivo.toFixed(2)} Bs</strong>
+                        <small class="balance-ayuda">Clic para ver tickets pagados</small>
+                    </div>
+                    <div class="balance-cuadrito balance-cuadrito-premio balance-cuadrito-interactivo" onclick="verPremiosBalance('pendientes', '${fechaInicio}', '${fechaFin}')" title="Ver premios pendientes">
+                        <span class="balance-icono">⏳</span>
+                        <span class="balance-etiqueta">Premios pendientes</span>
+                        <strong class="balance-valor">${premiosPendientesPorPagar.toFixed(2)} Bs</strong>
+                        <small class="balance-ayuda">Clic para ver premios no pagados</small>
+                    </div>
+                    <div class="balance-cuadrito balance-cuadrito-caja">
+                        <span class="balance-icono">💰</span>
+                        <span class="balance-etiqueta">Dinero en caja</span>
+                        <strong class="balance-valor">${dineroEnCaja.toFixed(2)} Bs</strong>
+                    </div>
+                    <div class="balance-cuadrito balance-cuadrito-ganancia" style="grid-column: 1 / -1;">
+                        <span class="balance-icono">📈</span>
+                        <span class="balance-etiqueta">Ganancia real de banca</span>
+                        <strong class="balance-valor ${claseGanancia}">${gananciaRealBanca.toFixed(2)} Bs</strong>
+                    </div>
+                </div>
             `;
         }
 
@@ -1057,57 +1824,123 @@
                         background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 9999;
                     }
                     .ticket-box {
-                        background: white; padding: 10px; border-radius: 8px; width: 240px; max-height: 90vh; overflow-y: auto;
-                        font-family: monospace; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                        background: white; padding: 10px; border-radius: 8px; width: 58mm; max-width: calc(100vw - 20px); max-height: 90vh; overflow-y: auto; box-sizing: border-box;
+                        font-family: "Courier New", monospace; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                    }
+                    #ticket-content-print {
+                        width: 100%;
+                        max-width: 58mm;
+                        margin: 0 auto;
+                        box-sizing: border-box;
+                        color: #000;
+                        font-family: "Courier New", monospace;
+                        font-size: 8px;
+                        line-height: 1.1;
+                        overflow-wrap: anywhere;
+                    }
+                    #ticket-content-print h2,
+                    #ticket-content-print h3,
+                    #ticket-content-print p {
+                        font-family: "Courier New", monospace;
+                        text-align: center;
+                        margin-left: 0;
+                        margin-right: 0;
+                    }
+                    .ticket-cabecera,
+                    .ticket-total,
+                    .ticket-mensaje {
+                        width: 100%;
+                        text-align: center;
+                        display: block;
+                    }
+                    .ticket-mensaje {
+                        font-size: 8px;
+                        line-height: 1.15;
+                        white-space: normal;
+                        overflow-wrap: normal;
+                        word-break: normal;
+                    }
+                    .ticket-items {
+                        width: 100%;
+                        text-align: center;
+                    }
+                    .ticket-item {
+                        margin-bottom: 2px;
+                        padding-bottom: 1px;
+                        border-bottom: 1px dotted #ccc;
+                        text-align: center;
+                        white-space: normal;
+                        overflow-wrap: anywhere;
+                    }
+                    .ticket-item div {
+                        text-align: center;
+                        white-space: normal;
+                        overflow-wrap: anywhere;
                     }
                     .ticket-acciones { display: flex; gap: 5px; margin-top: 10px; }
                     .ticket-acciones button { flex: 1; padding: 8px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px; color: white; }
                     
                     /* Configuración estricta para Impresora Térmica 58mm */
                     @media print {
-                        @page { size: 48mm auto; margin: 0mm; }
+                        @page { size: 58mm auto; margin: 0mm; }
                         body * { visibility: hidden; }
                         #ticket-content-print, #ticket-content-print * { visibility: visible; }
-                        #ticket-content-print { position: absolute; left: 0; top: 0; width: 48mm; padding: 2mm; box-sizing: border-box; }
+                        #ticket-content-print {
+                            position: absolute;
+                            left: 50%;
+                            top: 0;
+                            width: 58mm;
+                            max-width: 58mm;
+                            margin: 0;
+                            transform: translateX(-50%);
+                            padding: 1mm 2mm;
+                            box-sizing: border-box;
+                            font-family: "Courier New", monospace;
+                            font-size: 8px;
+                            line-height: 1.1;
+                            text-align: center;
+                        }
                         .ticket-acciones { display: none; }
                         #modal-ticket-prev { background: none; position: static; }
                     }
                 </style>
                 <div class="ticket-box">
                     <div id="ticket-content-print">
-                        <h2 style="margin:0; font-size:14px;">Lotería - Triunfo</h2>
-                        <p style="font-size:10px; margin:2px 0;">Cod: ${codigo}<br>${fechaFormateada} - ${horaActual}</p>
+                        <h2 class="ticket-cabecera" style="margin:0; font-size:11px;">LOTERIA - TRIUNFO</h2>
+                        <p class="ticket-cabecera" style="font-size:8px; margin:1px 0;">Cod: ${codigo}<br>${fechaFormateada} - ${horaActual}</p>
                         <hr style="border: 1px dashed #000; margin: 4px 0;">
-                        <div style="text-align:left; font-size:11px;">
+                        <div class="ticket-items" style="font-size:8px;">
                             ${carrito.map(i => `
-                                <div style="margin-bottom:4px; border-bottom:1px dotted #ccc; padding-bottom:2px;">
+                                <div class="ticket-item">
                                     <div style="font-weight:bold;">${i.lot} - ${i.horario}</div>
-                                    <div><b>${i.animalDetalle}</b> — ${i.mont} Bs</div>
+                                    <div><b>${i.animalDetalle}</b> - ${i.mont} Bs</div>
                                 </div>
                             `).join('')}
                         </div>
                         <hr style="border: 1px dashed #000; margin: 4px 0;">
-                        <h3 style="margin:4px 0; font-size:13px;">TOTAL: ${totalVenta.toFixed(2)} Bs</h3>
+                        <h3 class="ticket-total" style="margin:2px 0; font-size:10px;">TOTAL: ${totalVenta.toFixed(2)} Bs</h3>
                         <hr style="border: 1px dashed #000; margin: 4px 0;">
-                        <p style="font-size:8px; margin:3px 0; line-height:1.1; text-align:justify;">
-                            Verifique su ticket. Válido por 3 días.
+                        <p class="ticket-mensaje" style="margin:2px 0;">
+                            Verifique su ticket.<br>Valido por 3 dias.
                         </p>
-                        <p style="font-size:9px; margin:3px 0; font-style:italic;">¡Gracias por su preferencia!</p>
+                        <p class="ticket-mensaje" style="font-size:8px; margin:2px 0;">GRACIAS POR SU PREFERENCIA</p>
                     </div>
                     <div class="ticket-acciones">
-                        <button onclick="window.print()" style="background:#27ae60;">🖨️ Imprimir</button>
-                        <button onclick="cerrarPreviaTicket()" style="background:#c0392b;">🔙 Regresar</button>
+                        <button onclick="window.print(); cerrarPreviaTicket(true);" style="background:#27ae60;">🖨️ Imprimir</button>
+                        <button onclick="cerrarPreviaTicket(false)" style="background:#c0392b;">🔙 Regresar</button>
                     </div>
                 </div>
             `;
 
             document.body.appendChild(modal);
 
-            window.cerrarPreviaTicket = function() {
+            window.cerrarPreviaTicket = function(limpiarCarrito = false) {
                 document.getElementById('modal-ticket-prev').remove();
-                carrito = [];
-                horariosSeleccionadosVenta = [];
-                renderCart();
+                if (limpiarCarrito) {
+                    carrito = [];
+                    horariosSeleccionadosVenta = [];
+                    renderCart();
+                }
                 showPanel('ventas');
             }
         }
